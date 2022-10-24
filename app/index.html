@@ -1,0 +1,749 @@
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Taxi</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <style>
+        body {
+            background: #fafafa;
+            font-family: 'YS Text', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .form_wrapper {
+            width: 90%;
+            margin: 8px auto;
+            background: #f5f4f2;
+            box-shadow: 0 8px 20px rgb(117 115 111 / 20%);
+            border-radius: 24px;
+        }
+
+        .route_wrapper {
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+            padding: 0px 16px;
+            cursor: pointer;
+            background: #fff;
+            border-radius: 24px;
+        }
+
+        .input-wrapper.sortable.ui-sortable-helper {
+            box-shadow: rgb(117, 115, 111, 0.2) 0px 8px 20px;
+        }
+
+        .icon {
+            flex: 0 0 24px;
+            margin-right: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-repeat: no-repeat;
+            background-position: 50%;
+            background-size: contain;
+        }
+
+        .icon-sort {
+            display: none;
+            flex: 0 0 24px;
+            margin-right: 16px;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 1.5a.5.5 0 00.5.5h19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H.5a.5.5 0 00-.5.5v1zm0 4a.5.5 0 00.5.5h19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H.5a.5.5 0 00-.5.5v1zM.5 10a.5.5 0 01-.5-.5v-1A.5.5 0 01.5 8h19a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H.5z' fill='%239E9B98'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 50%;
+            background-size: 18px;
+        }
+
+        .icon-plus {
+            flex: 0 0 24px;
+            margin-right: 13px;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='28' height='24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.5 0a.5.5 0 00-.5.5V8H.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H8v7.5a.5.5 0 00.5.5h1a.5.5 0 00.5-.5V10h7.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H10V.5a.5.5 0 00-.5-.5h-1z' fill='currentColor'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg width='28' height='24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.5 0a.5.5 0 00-.5.5V8H.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H8v7.5a.5.5 0 00.5.5h1a.5.5 0 00.5-.5V10h7.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H10V.5a.5.5 0 00-.5-.5h-1z' fill='currentColor'/%3E%3C/svg%3E");
+            background-color: currentColor;
+            margin-left: 3px;
+            margin-top: 2px;
+        }
+
+        .icon-close {
+            display: none;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto -9px auto 0;
+            cursor: pointer;
+            color: #b2b2b2;
+            transition: color .15s linear;
+            width: 36px;
+            height: 36px;
+            z-index: 3;
+            right: 0;
+            background-repeat: no-repeat;
+            background-position: 50%;
+            padding: 9px;
+        }
+
+        .icon-close:hover {
+            color: #000;
+        }
+
+        .input-wrapper.active-close:not(.ui-sortable-helper):not(.new-input) .icon-close {
+            display: block;
+        }
+
+        .input-wrapper.sortable .icon {
+            display: none;
+        }
+
+        .input-wrapper.sortable .icon-sort {
+            display: flex;
+        }
+
+        .input-wrapper.sortable.active:not(.ui-sortable-helper) .icon-sort {
+            display: none;
+        }
+
+        .input-wrapper.sortable.active:not(.ui-sortable-helper) .icon {
+            display: flex;
+        }
+
+        .delete-point {
+            display: none;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto -9px auto 0;
+            right: 0;
+            flex-shrink: 0;
+            width: 36px;
+            height: 90%;
+            cursor: pointer;
+            border: 0px;
+            background: #fff;
+        }
+
+        .delete-point::before {
+            transition: background-color .15s linear;
+        }
+
+        .delete-point::after {
+            transform: scale(0);
+        }
+
+        ._2V52WSBGUES6TT51SM3STd {
+            width: 14px;
+            height: 18px;
+            margin: auto;
+            background: url("data:image/svg+xml,%3Csvg width='14' height='18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9.646.146L10.5 1h3a.5.5 0 01.5.5V3H0V1.5A.5.5 0 01.5 1h3l.854-.854A.5.5 0 014.707 0h4.586a.5.5 0 01.353.146zM1 17.5a.5.5 0 00.5.5h11a.5.5 0 00.5-.5V4H1v13.5zM3 6h8v10H3V6z' fill='%23FA6A3C'/%3E%3C/svg%3E") no-repeat;
+        }
+
+        .input-wrapper.sortable:not(.active-close):not(.active) .delete-point {
+            display: flex;
+        }
+
+        .input-wrapper.new-input {
+            padding-bottom: 3px;
+        }
+
+        input.address {
+            width: 100%;
+            padding: 17px 25px 23px 0;
+            border-width: 0;
+            border-radius: 0;
+            transition: padding .3s;
+            outline: none;
+            border-bottom: 1px solid rgba(210, 208, 204, .5);
+            color: #21201f;
+        }
+
+        input.address::placeholder {
+            color: #9e9b98;
+        }
+
+        input.address:focus {
+            border-bottom: 1px solid #fcb900;
+        }
+
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            background: #fff;
+            box-shadow: 0 8px 20px rgb(117 115 111 / 20%);
+            width: 100%;
+            border-radius: 24px;
+            border: none;
+            overflow: hidden;
+            max-height: 280px;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            padding: 4px 8px;
+        }
+
+        .autocomplete-scroll-wrapper div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .autocomplete-scroll-wrapper div::before {
+            position: absolute;
+            right: 8px;
+            bottom: 0;
+            left: 8px;
+            height: 1px;
+            content: "";
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        .autocomplete-scroll-wrapper div:last-child::before {
+            border-bottom: none;
+        }
+
+        .autocomplete-scroll-wrapper div.hovered-bg {
+            background-color: #e9e9e9;
+        }
+
+        .autocomplete-scroll-wrapper div.hovered-bg::before, .autocomplete-scroll-wrapper div.no-border-bottom::before {
+            border-bottom: none;
+        }
+
+        .autocomplete-scroll-wrapper div.no-results {
+            text-align: center;
+            margin: 4px 0;
+        }
+
+        .autocomplete-scroll-wrapper div h4 {
+            color: #169cdc;
+            font-size: 16px;
+            line-height: 20px;
+            margin-bottom: 0px;
+        }
+
+        .autocomplete-scroll-wrapper div span {
+            font-size: 13px;
+            line-height: 15px;
+            color: #9e9b98;
+        }
+
+        .submit_wrapper {
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            padding: 16px;
+        }
+
+        input[type="submit"] {
+            border-radius: 16px;
+            background: #fce000;
+            font-weight: 700;
+            border: none;
+            color: #000;
+            width: 100%;
+            line-height: 56px;
+            font-size: 16px;
+            transition: .15s linear;
+        }
+
+        input[type="submit"]:hover {
+            background: #fac000;
+        }
+
+        input[type="submit"]:disabled {
+            background: #dbdbdb !important;
+        }
+
+        .add-input {
+            display: flex;
+            align-items: center;
+            min-height: 68px;
+            padding: 0px 16px;
+            cursor: pointer;
+            background: #fff;
+            border-radius: 24px;
+            color: #9e9b98;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form_wrapper">
+    <form id="routeForm">
+        <div class="route_wrapper">
+            <div class="input-wrapper">
+                <div class="icon div-icon">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="7" fill="#fc5230"></circle>
+                        <circle cx="12" cy="12" r="4" fill="#fff"></circle>
+                    </svg>
+                </div>
+                <div class="icon-sort div-icon"></div>
+                <div class="autocomplete w-100">
+                    <input type="text" class="address" placeholder="Откуда" data-key="0" value="">
+                    <span class="icon-close" aria-hidden="true">
+                        <svg viewBox="0 0 20 20">
+                            <path focusable="false" width="0" height="0"
+                                  fill="currentColor"
+                                  d="M10,20 C4.5,20 0,15.5 0,10 C0,4.5 4.5,0 10,0 C15.5,0 20,4.5 20,10 C20,15.5 15.5,20 10,20 L10,20 L10,20 L10,20 Z M15,6.4 L13.6,5 L10,8.6 L6.4,5 L5,6.4 L8.6,10 L5,13.6 L6.4,15 L10,11.4 L13.6,15 L15,13.6 L11.4,10 L15,6.4 L15,6.4 L15,6.4 L15,6.4 Z"></path>
+                        </svg>
+                    </span>
+                    <div class="autocomplete-items d-none">
+                        <div class="autocomplete-scroll-wrapper">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sortable-list">
+                <div class="input-wrapper">
+                    <div class="icon div-icon">
+                        <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="7" fill="#000000"></circle>
+                            <circle cx="12" cy="12" r="4" fill="#fff"></circle>
+                        </svg>
+                    </div>
+                    <div class="icon-sort div-icon"></div>
+                    <div class="autocomplete w-100">
+                        <input type="text" class="address" placeholder="Куда?" data-key="1" value="">
+                        <span class="icon-close" aria-hidden="true">
+                            <svg viewBox="0 0 20 20">
+                                <path focusable="false" width="0" height="0"
+                                      fill="currentColor"
+                                      d="M10,20 C4.5,20 0,15.5 0,10 C0,4.5 4.5,0 10,0 C15.5,0 20,4.5 20,10 C20,15.5 15.5,20 10,20 L10,20 L10,20 L10,20 Z M15,6.4 L13.6,5 L10,8.6 L6.4,5 L5,6.4 L8.6,10 L5,13.6 L6.4,15 L10,11.4 L13.6,15 L15,13.6 L11.4,10 L15,6.4 L15,6.4 L15,6.4 L15,6.4 Z"></path>
+                            </svg>
+                        </span>
+                        <button type="button" class="delete-point" autocomplete="off" title="Удалить точку">
+                            <div class="_2V52WSBGUES6TT51SM3STd"></div>
+                        </button>
+                        <div class="autocomplete-items d-none">
+                            <div class="autocomplete-scroll-wrapper">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-input" id="cloneInput">
+                <div class="icon-plus"></div>
+                Добавить остановку
+            </div>
+        </div>
+        <div class="submit_wrapper">
+            <input type="submit" value="Заказать" disabled>
+        </div>
+
+        <!-- Clone objects !-->
+        <div class="d-none clone-list-item">
+            <h4></h4>
+            <span></span>
+        </div>
+
+        <div class="input-wrapper d-none clone-input-item">
+            <div class="icon div-icon">
+                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="7" fill="#000000"></circle>
+                    <circle cx="12" cy="12" r="4" fill="#fff"></circle>
+                </svg>
+            </div>
+            <div class="icon-sort div-icon"></div>
+            <div class="autocomplete w-100">
+                <input type="text" class="address" placeholder="Куда?" data-key="">
+                <span class="icon-close" aria-hidden="true">
+                    <svg viewBox="0 0 20 20">
+                        <path focusable="false" width="0" height="0"
+                              fill="currentColor"
+                              d="M10,20 C4.5,20 0,15.5 0,10 C0,4.5 4.5,0 10,0 C15.5,0 20,4.5 20,10 C20,15.5 15.5,20 10,20 L10,20 L10,20 L10,20 Z M15,6.4 L13.6,5 L10,8.6 L6.4,5 L5,6.4 L8.6,10 L5,13.6 L6.4,15 L10,11.4 L13.6,15 L15,13.6 L11.4,10 L15,6.4 L15,6.4 L15,6.4 L15,6.4 Z"></path>
+                    </svg>
+                </span>
+                <button type="button" class="delete-point" autocomplete="off" title="Удалить точку">
+                    <div class="_2V52WSBGUES6TT51SM3STd"></div>
+                </button>
+                <div class="autocomplete-items d-none">
+                    <div class="autocomplete-scroll-wrapper">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End clone objects !-->
+    </form>
+</div>
+
+<script>
+    var config = {
+        minChar: 1,
+        delay: 0,
+        boundedBy: [[49.651690, 72.913439], [50.002202, 73.408191]],
+        redirect: 'https://api.whatsapp.com/send?phone=77711474209'
+    };
+
+    const apiUrl = 'localhost:8000/webhook/get_suggest?q=';
+    const skipedKind = [
+        'street', 'ERT_ORGANIZATION_FAKE_CHAIN'
+    ];
+
+    $(function () {
+        let $cloneList = $('.clone-list-item');
+        let $cloneInput = $('.clone-input-item');
+        let $routeWrapper = $('.route_wrapper');
+
+        let oldQuery = {
+            0: null,
+            1: null
+        };
+        let inputValues = {
+            0: null,
+            1: null
+        };
+        let dataValues = {
+            0: null,
+            1: null
+        };
+        let sortableOn = false;
+        let timeout = undefined;
+        let currentRequest = null;
+        let nextKey = $('.input-wrapper:not(.clone-input-item)').length;
+
+        $(document).on('keyup click change', '.address', function () {
+            let key = parseInt($(this).data('key'));
+            let $firstInput = $('input.address[data-key=0]');
+            if (key && (inputValues[0] === null || !inputValues[0].length)) {
+                $firstInput.focus();
+                $firstInput.click();
+                return;
+            }
+
+            if ($(this).val().length) {
+                $(this).closest('.input-wrapper').addClass('active-close');
+            } else {
+                $(this).closest('.input-wrapper').removeClass('active-close');
+            }
+
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                search($(this));
+            }, config.delay);
+        });
+
+        function parseResults(data) {
+            try {
+
+                var filtered = data.results.filter((item) => {
+                    return typeof item.lat !== 'undefined';
+                });
+                filtered = filtered.filter((item) => {
+                    return skipedKind.indexOf(item.kind) === -1;
+                });
+                filtered = filtered.filter((item) => {
+                    return item.lat >= config.boundedBy[0][0] && item.lat <= config.boundedBy[1][0]
+                        && item.lon >= config.boundedBy[0][1] && item.lon <= config.boundedBy[1][1];
+                });
+
+                filtered = filtered.reverse();
+                filtered.sort((x, y) => {
+                    if (x.kind === "college") {
+                        return 1;
+                    }
+
+                    return -1;
+                });
+                filtered = filtered.slice(0, 8);
+            } catch (e) {
+                return [];
+            }
+
+            return filtered;
+        }
+
+        function search($input) {
+            let $list = $input.closest('.autocomplete').find('.autocomplete-scroll-wrapper');
+            let query = $input.val();
+            let key = parseInt($input.data('key'));
+
+            if (!query.length) {
+                noResults($list);
+                return;
+            }
+
+            if (query === oldQuery[key] || query.length < config.minChar) {
+                $list.closest('.autocomplete-items').removeClass('d-none');
+                return;
+            }
+
+            currentRequest = $.ajax({
+                url: apiUrl + query,
+                beforeSend: function () {
+                    if (currentRequest != null) {
+                        currentRequest.abort();
+                    }
+                }
+            })
+                .done(function (data) {
+                    let items = parseResults(data);
+
+                    oldQuery[key] = query;
+                    $list.find('div').remove();
+
+                    if (!items.length) {
+                        noResults($list);
+                        return;
+                    }
+
+                    items.forEach(function (item) {
+                        let $cloneListItem = $cloneList.clone();
+
+                        $cloneListItem.removeClass('d-none clone-list-item');
+                        $cloneListItem.find('h4').text(item.name);
+                        $cloneListItem.find('span').text(item.desc);
+                        $cloneListItem.data('data', JSON.stringify(item));
+
+                        $list.append($cloneListItem);
+                    });
+
+                    $list.closest('.autocomplete-items').removeClass('d-none');
+                    $list.slimScroll({
+                        size: '0px',
+                        height: 'auto'
+                    });
+                });
+        }
+
+        function noResults($list) {
+            $list.html('<div class="no-results">Ничего не найдено</div>');
+            $list.closest('.autocomplete-items').removeClass('d-none');
+            $list.slimScroll({
+                size: '0px',
+                height: 'auto'
+            });
+        }
+
+        $(document).on('mouseover', '.autocomplete-scroll-wrapper div', function () {
+            if ($(this).hasClass('no-results')) {
+                return;
+            }
+
+            let $list = $(this).closest('.autocomplete');
+            $list.find('div').removeClass('no-border-bottom hovered-bg');
+            $(this).addClass('hovered-bg');
+            $(this).prev().addClass('no-border-bottom');
+        });
+
+        $(document).on('click', '.autocomplete-scroll-wrapper div:not(.no-results)', function () {
+            let $input = $(this).closest('.autocomplete').find('input');
+            let newVal = $(this).find('h4').text();
+            let key = parseInt($input.data('key'));
+            $input.val(newVal);
+            $('.autocomplete-items').addClass('d-none');
+
+            oldQuery[key] = newVal;
+            inputValues[key] = newVal;
+            dataValues[key] = JSON.parse($(this).data('data'));
+
+            if (key === nextKey - 1) {
+                $input.closest('.input-wrapper').removeClass('new-input');
+                $('.add-input').removeClass('d-none');
+                sortableEnable();
+            }
+
+            if (key === 1) {
+                $('input[type="submit"]').prop('disabled', false);
+            }
+
+            $input.blur();
+        });
+
+        $(document).on('click', function (e) {
+            let $target = $(e.target);
+            let $autocomplete = $target.closest('.autocomplete');
+            let showCurrent = false;
+
+            if ($target.hasClass('div-icon')
+                || $target.hasClass('input-wrapper')
+                || $target.localName === 'svg'
+                || $target.localName === 'circle') {
+                $target.closest('.input-wrapper').find('input').blur();
+            }
+
+            if ($autocomplete.length
+                && !$autocomplete.find('.autocomplete-items').hasClass('d-none')
+                && !$target.hasClass('input-wrapper')
+                && !$target.hasClass('div-icon')
+                && $target.localName !== 'svg'
+                && $target.localName !== 'circle') {
+                showCurrent = true;
+            }
+
+            $('.autocomplete-items').each(function (i, elem) {
+                if (!$(elem).closest('.autocomplete').find('input').is(':focus')) {
+                    $(elem).addClass('d-none');
+                }
+            });
+
+            if (showCurrent) {
+                $autocomplete.find('.autocomplete-items').removeClass('d-none');
+            }
+
+            $('.input-wrapper:not(.clone-input-item)').each(function (i, item) {
+                let $input = $(item).find('input');
+                if (!$input.is(':focus')) {
+                    $(item).removeClass('active active-close');
+
+                    if ($(item).hasClass('new-input')) {
+                        $(item).remove();
+                        $('.add-input').removeClass('d-none');
+                    }
+
+                    let key = $input.data('key');
+                    let val = inputValues[key];
+                    let currentVal = $input.val();
+
+                    if (val !== currentVal) {
+                        $input.val(val);
+                        oldQuery[key] = null;
+                    }
+                }
+            });
+        });
+
+        $('#cloneInput').on('click', function () {
+            let $prevInput = null;
+            let prevKey = nextKey - 1;
+            do {
+                $prevInput = $('input.address[data-key=' + prevKey + ']');
+                prevKey--;
+                if ($prevInput.length) {
+                    break;
+                }
+            } while (prevKey > 0);
+
+            if (!$prevInput.val().length) {
+                $prevInput.focus();
+                $prevInput.click();
+                return;
+            }
+
+            let $cloneInputItem = $cloneInput.clone();
+
+            $cloneInputItem.removeClass('d-none clone-input-item').addClass('new-input');
+            $cloneInputItem.find('input').attr('data-key', nextKey);
+            $routeWrapper.find('.sortable-list').append($cloneInputItem);
+            $cloneInputItem.find('input').focus().click();
+
+            oldQuery[nextKey] = null;
+            nextKey++;
+            $(this).addClass('d-none');
+        });
+
+        $(document).on('focus', '.address', function () {
+            $(this).closest('.input-wrapper').addClass('active');
+        });
+
+        $(document).on('blur', '.address', function () {
+            clearTimeout(timeout);
+            if (currentRequest != null) {
+                currentRequest.abort();
+            }
+        });
+
+        $(document).on('click', '.icon-close', function () {
+            let $input = $(this).closest('.autocomplete').find('input');
+            $input.val('').change();
+            $input.focus();
+        });
+
+        $(document).on('click', '.delete-point', function () {
+            $(this).closest('.input-wrapper').remove();
+
+            let inputCount = $('.input-wrapper:not(.clone-input-item)').length;
+            if (inputCount === 2) {
+                $('.input-wrapper').removeClass('sortable');
+                sortableOn = false;
+            }
+        });
+
+        $(document).on('submit', 'form#routeForm', function () {
+            let searchParams = new URLSearchParams(window.location.search);
+
+            let data = new FormData();
+            data.append('user_id', searchParams.has('user_id') ? searchParams.get('user_id') : null);
+
+            $('.input-wrapper:not(.clone-input-item)').each(function (i, item) {
+                let key = parseInt($(item).find('input').data('key'));
+
+                data.append('route[' + i + '][short_text]', dataValues[key].name);
+                data.append('route[' + i + '][fullname]', dataValues[key].desc);
+                data.append('route[' + i + '][geo_point][]', dataValues[key].lat);
+                data.append('route[' + i + '][geo_point][]', dataValues[key].lon);
+                data.append('route[' + i + '][type]', dataValues[key].type);
+                data.append('route[' + i + '][city]', 'Караганда');
+            });
+
+            $.ajax({
+                url: "https://s75ph.localtonet.com/order",
+                type: "post",
+                data: data,
+                async: true,
+                processData: false,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                complete: function () {
+                    window.location.href = config.redirect;
+                }
+            });
+
+            return false;
+        });
+
+        function sortableEnable() {
+            if (sortableOn) {
+                $('.input-wrapper:not(.clone-input-item)').not(':first').addClass('sortable');
+                return;
+            }
+
+            let inputCount = $('.input-wrapper:not(.clone-input-item)').length;
+            if (inputCount > 2) {
+                $('.input-wrapper:not(.clone-input-item)').not(':first').addClass('sortable');
+                $routeWrapper.find('.sortable-list').sortable({
+                    itemSelector: '.input-wrapper.sortable',
+                    axis: 'y',
+                    sort: function () {
+                        clearTimeout(timeout);
+                        $('.autocomplete-items').addClass('d-none');
+                    }
+                });
+                sortableOn = true;
+            }
+        }
+    });
+</script>
+</body>
+</html>
