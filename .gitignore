@@ -4,6 +4,8 @@ error_data/*
 develop/*
 app/__pycache__/*
 helper/__pycache__/*
+./app/__pycache__/*
+
 core/*
 test_deploy/*
 tensorboard/*
