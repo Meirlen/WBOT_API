@@ -27,8 +27,10 @@ def get_orders(db: Session = Depends(get_db)):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_order(order: schemas.OrderCreate,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+async def create_order(order: schemas.OrderCreate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
 
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = '*'
 
     # create new order
     new_order = models.Order(user_id = order.user_id)
@@ -67,6 +69,8 @@ async def create_order(order: schemas.OrderCreate,background_tasks: BackgroundTa
     # calculate orders
   
     price_info = get_price_by_route(route_array)
+
+
     if price_info == None:
         return {"order_id": order_id}
     else:

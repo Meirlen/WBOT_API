@@ -28,7 +28,6 @@ async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks
     phone_number = input_message.waId
     user_name = input_message.senderName
     user = db.query(models.User).filter(models.User.phone_number == phone_number).first()
-    user_id = str(user.id)
 
     if not user:
         # Registr whatsapp user
@@ -38,10 +37,11 @@ async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks
         db.commit()
         db.refresh(new_user)
         # send message to whatsapp async
-        background_tasks.add_task(send_greet_message,phone_number,user_name,user_id)
+        background_tasks.add_task(send_greet_message,phone_number,user_name,str(new_user.id))
         
     else:
         print("User already exist: ", user.user_name)
+        user_id = str(user.id)
 
         order = db.query(models.Order).filter(models.Order.user_id == user.id,models.Order.status != "cancel_by_user").first()
         if not order:

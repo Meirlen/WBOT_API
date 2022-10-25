@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@postgres/alem'
 
-
+# SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 
 
 

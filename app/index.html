@@ -404,7 +404,10 @@
         redirect: 'https://api.whatsapp.com/send?phone=77711474209'
     };
 
-    const apiUrl = 'http://165.22.13.172:8000/webhook/get_suggest?q=';
+
+    // const base_url = "http://165.22.13.172:8000"
+
+    const apiUrl = 'https://hmouv.localtonet.com/webhook/get_suggest?q=';
     const skipedKind = [
         'street', 'ERT_ORGANIZATION_FAKE_CHAIN'
     ];
@@ -716,7 +719,7 @@
                     'Cache-Control': 'no-cache'
                 },
                 complete: function () {
-                    window.location.href = config.redirect;
+                    // window.location.href = config.redirect;
                 }
             });
 

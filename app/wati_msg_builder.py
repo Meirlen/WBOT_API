@@ -13,8 +13,8 @@ def send_greet_message(phone_number,name,user_id):
 
 def send_template_ask_fill_address(phone_number,user_id):
     rows = []
-    rows.append(TemplateRow("1",user_id))
-    request_body = TemplateRequestBody('ask_fill_address','ask_fill_address',rows)
+    rows.append(TemplateRow("1","?user_id="+user_id))
+    request_body = TemplateRequestBody('ask_fill_address_2','ask_fill_address_2',rows)
     send_template(phone_number,request_body)
 
 
