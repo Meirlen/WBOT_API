@@ -3,7 +3,7 @@ services:
   api:
     build: .
     ports:
-      - 80:8000
+      - 8000:8000
     volumes:
       - ./:/usr/src/app
     # env_file:
