@@ -27,8 +27,9 @@ async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks
     user_message = input_message.text
     phone_number = input_message.waId
     user_name = input_message.senderName
-    user_id = "5"
     user = db.query(models.User).filter(models.User.phone_number == phone_number).first()
+    user_id = str(user.id)
+
     if not user:
         # Registr whatsapp user
         print("User send message at first time, need to add in user table")
