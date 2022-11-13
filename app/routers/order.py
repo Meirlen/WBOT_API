@@ -9,6 +9,11 @@ from ..database import get_db
 
 from ..wati_msg_builder import *
 from yandex.calc_price import *
+from baursak.calc_b_price import *
+from region.calc_region_price import *
+from yandex.create_order import *
+from admin.telegram_api import *
+
 router = APIRouter(
     prefix="/order",
     tags=['Orders']
@@ -24,16 +29,29 @@ def get_orders(db: Session = Depends(get_db)):
     return {"data": orders}
 
 
+def create_yandex_order(db,order_id,routes,client_phone_number):
+
+    order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
+    yandex_order_id = send_order_to_yandex(routes,client_phone_number)
+    print("YANDEX ORDER ID", yandex_order_id)
+
+    if yandex_order_id != None:
+        # Update Postgres order table
+        order_query.update({"yandex_order_id":yandex_order_id}, synchronize_session=False)    
+        db.commit()
+
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_order(order: schemas.OrderCreate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
 
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
+    # response.headers['Access-Control-Allow-Origin'] = 'http://165.22.13.172'
 
     # create new order
-    new_order = models.Order(user_id = order.user_id)
+    new_order = models.Order(user_id = order.user_id,app_type = order.app_type,tariff = order.tariff)
     user = db.query(models.User).filter(models.User.id == order.user_id).first()
 
     
@@ -43,19 +61,16 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
 
 
     order_id = new_order.order_id
-    # send to whatsapp user order created message
-    if user:
-        send_order_info(user.phone_number,order.route[0].short_text,order.route[1].short_text)
+ 
 
     # create new route
     routes = order.route
     route_array = []
     for route in routes:
-        
         new_route = models.Route(   short_text = route.short_text,
                                     fullname = route.fullname,
-                                    lat = route.geo_point[0],
-                                    lng = route.geo_point[1],
+                                    lat = round(route.geo_point[0], 6),
+                                    lng =  round(route.geo_point[1], 6),
                                     type = route.type,
                                     city = route.city,
                                     order_id = new_order.order_id )
@@ -67,33 +82,60 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
         db.refresh(new_route)
 
     # calculate orders
-  
-    price_info = get_price_by_route(route_array)
-
-
-    if price_info == None:
-        return {"order_id": order_id}
-    else:
-        
-        # send to whatsapp user message with prices
-        if user:
-            yandex_econom = price_info[0]['name_tariff'] + "-" + price_info[0]['price']
-            yandex_bussines = price_info[1]['name_tariff'] + "-" + price_info[1]['price']
-            send_price_info(user.phone_number,yandex_econom,yandex_bussines) 
-
-        return {
-            
-               "order_id": order_id,
-               "price_yandex": price_info
-               
-               }
 
 
 
 
+    app_type = order.app_type
+    tariff= order.tariff
+    price_info = None
+    aggregator = None
+    if tariff == "e":
+        tariff = "Эконом"
+    if tariff == "c":
+            tariff = "Комфорт"     
+    price = None
 
+    if app_type == "y":
+        price_info = get_price_by_route(route_array)
+        aggregator = "Яндекс"
+        phone_number = user.phone_number.replace('7', '8', 1)
+        print("User phone num ", phone_number)
+        create_yandex_order(db,order_id,routes,phone_number)
 
+    if app_type == "r":
+        print("Region arr ", route_array)
+        price_info =  get_price_by_route_region(route_array)
+        aggregator = "Регион"
+
+    if app_type == "b":
+        price_info = get_price_by_route_baursak(route_array)
+        aggregator = "Бауырсак"
     
+  
+
+    if  price_info != None:
+            if order.tariff == "e":
+                price = price_info[0]['price']
+            if order.tariff == "c":
+                price = price_info[1]['price']    
+    if user:
+        # send to whatsapp user order created message
+
+        from_address = order.route[0].short_text
+        to_address =  order.route[1].short_text
+        send_order_info(
+                        user.phone_number,
+                        from_address,
+                        to_address,
+                        aggregator,
+                        tariff,
+                        price)
+
+        address = from_address + "  \n"+ to_address
+        send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n '+ aggregator +  " \n "+ str(user.phone_number)+"\n"+address)               
+
+    return {"order_id": order_id, "app_type": app_type}
 
 
     # print("Order created in Postgres")
@@ -118,6 +160,45 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
     return new_order
 
     
+@router.post("/estimate", status_code=status.HTTP_201_CREATED)
+async def create_draft(order: schemas.OrderEstimate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    routes = order.route
+    route_array = []
+    for route in routes:
+        lat_point = round(route.geo_point[1], 6)
+        lon_point = round(route.geo_point[0], 6)
 
-  
+        route_array.append([lat_point,lon_point])
 
+    # if yandex_price_info == None:
+    # yandex_price_info = get_price_by_route(route_array)
+    yandex_price_info = get_price_by_route(route_array)
+    baursak_price_info = get_price_by_route_baursak(route_array)
+    region_price_info = get_price_by_route_region(route_array)
+
+
+    print(route_array)
+
+    
+    return  {
+         "yandex":yandex_price_info,
+         "baursak": baursak_price_info,
+         "region": region_price_info
+
+    }
+
+
+
+
+@router.post("/update_status", status_code=status.HTTP_200_OK)
+async def update_status(order: schemas.OrderStatus,db: Session = Depends(get_db)):
+   
+    
+    # get last order by ORDER DESC
+    # change order status to Assigned 
+    order_query = db.query(models.Order).filter(models.Order.order_id == order.order_id)
+    order_query.update({"status":"assigned"}, synchronize_session=False)    
+    db.commit()
+
+
+    return {"order_id": order.order_id, "status": order.status}

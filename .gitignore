@@ -1,4 +1,5 @@
 ./venv/*
+__pycache__/
 train_test_split/*
 error_data/*
 develop/*
@@ -7,6 +8,9 @@ helper/__pycache__/*
 ./app/__pycache__/*
 app/routers/__pycache__/*
 ./app/routers/__pycache__/*
+./yandex/__pycache__/*
+yandex/__pycache__/*
+/yandex/__pycache__/*
 core/*
 test_deploy/*
 tensorboard/*

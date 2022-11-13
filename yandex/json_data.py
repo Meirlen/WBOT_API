@@ -1,5 +1,5 @@
 
-from yandex.yandex_config import *
+from .yandex_config import *
 
 calc_price_json_data = {
 

@@ -8,6 +8,13 @@ from .routers import order,user,auth,webhook
 
 app = FastAPI()
 origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
@@ -21,6 +28,8 @@ app.include_router(webhook.router)
 
 
 models.Base.metadata.create_all(bind=engine)
+
+
 
 
 

@@ -19,10 +19,20 @@ class YandexRoute(BaseModel):
         type:str
         city:str
 
-class OrderCreate(BaseModel):
+class OrderEstimate(BaseModel):
     route: List[YandexRoute]
     user_id: int
 
+
+class OrderCreate(BaseModel):
+    route: List[YandexRoute]
+    user_id: int
+    app_type:str
+    tariff:str
+
+class UpdateYToken(BaseModel):
+    token:str
+     
 class OrderStatus(BaseModel):
     order_id: int
     status: str

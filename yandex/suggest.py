@@ -14,9 +14,9 @@ from yandex_config import *
 def search_address_with_suggest():
     
     json_data = {
-                "part": "юм",
+                "part": "назарбаева",
                 "type": "a",
-                "id": "ce2df432562645c4badf635268ff2582",
+                "id": x_yataxi_userid,
                 "state": {
                     "accuracy": 0,
                     "location": [

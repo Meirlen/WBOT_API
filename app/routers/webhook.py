@@ -10,10 +10,14 @@ from .. import oauth2
 from app.database import get_db
 from yandex.create_order import *
 from yandex.active_order import *
+from datetime import datetime, timezone
+from admin.telegram_api import *
+
 router = APIRouter(
     prefix="/webhook",
     tags=['Whatsapp']
 )
+from sqlalchemy import and_, or_, not_
     
    
 @router.post("/message", status_code=status.HTTP_200_OK)
@@ -43,8 +47,28 @@ async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks
         print("User already exist: ", user.user_name)
         user_id = str(user.id)
 
-        order = db.query(models.Order).filter(models.Order.user_id == user.id,models.Order.status != "cancel_by_user").first()
+        # order = db.query(models.Order).filter(models.Order.user_id == user.id,and_(
+        #     models.Order.status != "cancel_by_user",models.Order.status != "expired"),).first()
+
+        # get last order by ORDER DESC
+        order = db.query(models.Order).filter(models.Order.user_id == user.id).order_by(models.Order.order_id.desc()).first() 
+
+
         if not order:
+            print("The user dont't have  any order proccess")
+            send_template_ask_fill_address(phone_number,user_id)
+            return input_message
+
+
+        print("Order id", order.order_id)    
+        curr_time = datetime.now(timezone.utc)
+        order_time = order.created_at
+        difference =  curr_time - order_time
+        duration_in_s = difference.total_seconds()
+        minutes = divmod(duration_in_s, 60)[0]   
+        print("Order created ", minutes , " min ago")
+
+        if not order or minutes > 120:
             print("The user dont't have  any order proccess")
             send_template_ask_fill_address(phone_number,user_id)
         else:    
@@ -52,81 +76,55 @@ async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks
             order_status =  order.status
             order_query = db.query(models.Order).filter(models.Order.order_id == order.order_id)
 
-            if order_status == "open":
-                # Принятие заказа
-                if "Эконом" in user_message:
-
-                    send_car_search_info(phone_number)                          
-                    # Update Postgres order table
-                    order_query.update({"status":"search_car"}, synchronize_session=False)    
-                    db.commit()
-
-                    
-                    # Create order in Yandex using yandex api START
-                    routes = db.query(models.Route).filter(models.Route.order_id == order.order_id)
-
-                    route_array = []
-                    for route in routes:
-                        route_array.append({
-                                                "short_text": route.short_text,
-                                                "geopoint": [
-                                                    route.lat,
-                                                    route.lng,
-                                                ],
-                                                "fullname": route.fullname,
-                                                "type": route.type,
-                                                "city":  route.city
-                                            })
-                    
-                    yandex_order_id = create_draft(route_array)
-
-                    if yandex_order_id != None:
-                        # Update Postgres order table
-                        order_query.update({"yandex_order_id":yandex_order_id}, synchronize_session=False)    
-                        db.commit()
-                    # Create order in Yandex using yandex api FINISH
-
-
-
-
-
-
-                # else:
-                #    send_price_info(phone_number) 
-
-            elif order_status == "search_car":
-
+       
+    
+            if order_status == "search_car":
                 if user_message == CANCEL_BTN_TITLE:
-                    # Cancel order by user in Yandex using yandex api START
-                    print("Клиент отменил заказ")
-                    send_message(phone_number, '💁 *- Заказ отменен.*')                          
-                    # Update Postgres order table
-                    order_query.update({"status":"cancel_by_user"}, synchronize_session=False)    
-                    db.commit()
-
-                    send_template_ask_fill_address(phone_number,user_id)
-
-                    # Cancel order in Yandex using yandex api START
-                    yandex_order_id = order.yandex_order_id
-                    get_order(yandex_order_id,True)
-                    print("YORDER_ID ",yandex_order_id)
-
-
+                    cancel_order_by_user(phone_number, user_id,order_query,db,order)
                 else:   
                    send_car_search_info(phone_number)
 
+
             elif order_status == "assigned":
-                 send_car_search_info(phone_number)     
+                if user_message == CANCEL_BTN_TITLE:
+                    cancel_order_by_user(phone_number, user_id,order_query,db,order)
+                else:   
+                    sended_car_info(phone_number,'💁 *- Ожидайте авто, к вам уже выехала машина*\n\n') 
+
+            elif order_status == "arrived":
+                if user_message == CANCEL_BTN_TITLE:
+                    cancel_order_by_user(phone_number, user_id,order_query,db,order)
+                else:   
+                    sended_car_info(phone_number,'💁 *- Машина ожидает вас, выходите!*\n\n') 
             else:
-                print('csdc')
-            
+                print(order_status)
+                send_template_ask_fill_address(phone_number,user_id)
+
 
 
 
     return input_message    
   
 
+def cancel_order_by_user(phone_number, user_id,order_query,db,order):
+    print("Клиент отменил заказ")
+    send_message(phone_number, '💁 *- Заказ отменен.*')                          
+    # Update Postgres order table
+    order_query.update({"status":"cancel_by_user"}, synchronize_session=False)    
+    db.commit()
 
+    send_template_ask_fill_address(phone_number,user_id)
+
+
+    send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ КЛИЕНТ ОМЕНИЛ ЗАКАЗ! \n ' + str(phone_number) )               
+
+    
+
+    yandex_order_id = order.yandex_order_id
+    if yandex_order_id != None:
+        # Cancel order by user in Yandex using yandex 
+        get_order(yandex_order_id,True) 
+        print("YORDER_ID  ",yandex_order_id)
 
 
 
@@ -174,7 +172,24 @@ async def get_orders(q,response: Response):
     return suggest(q)
 
 
+
+import os
+
+@router.get("/get_yandex_token", )
+async def get_y_token(response: Response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+
+
    
-     
-  
+    return os.getenv("CSRF_TOKEN",None)  
+
+
+@router.post("/yandex_token_update", )
+async def set_y_token(upd: schemas.UpdateYToken, db: Session = Depends(get_db)):   
+    os.environ["CSRF_TOKEN"] = upd.token
+    cred = db.query(models.Credentials).filter(models.Credentials.name == "csrf_token")
+    cred.update({"value":str(upd.token)}, synchronize_session=False)    
+    db.commit()
+
+    return {"response": upd.token}    
     
