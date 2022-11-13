@@ -172,7 +172,7 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
 
     # if yandex_price_info == None:
     # yandex_price_info = get_price_by_route(route_array)
-    yandex_price_info = get_price_by_route(route_array)
+    yandex_price_info = None # get_price_by_route(route_array)
     baursak_price_info = get_price_by_route_baursak(route_array)
     region_price_info = get_price_by_route_region(route_array)
 

@@ -43,7 +43,6 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # git remote set-url origin https://github.com/Meirlen/WBOT_API.git
 
 # git branch -M main
-# git push -u origin main
 
 # git push origin master
 
