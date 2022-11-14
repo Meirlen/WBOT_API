@@ -37,7 +37,7 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # curl -fsSL https://get.docker.com -o get-docker.sh
 
 
-#  git commit -m "baursak texi include"
+#  git commit -m "setup pgadmin4"
 #  git config --global user.email "miko_982@mail.ru"
 #  git config --global user.name "Meirlen"
 #  git rm -r --cached .
@@ -65,6 +65,8 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # Для обновления:
 # docker-compose up --force-recreate --build -d
 # docker image prune -f
+# See logs specify service
+# docker-compose logs api
 
 # Stop all containers
 # docker kill $(docker ps -q)

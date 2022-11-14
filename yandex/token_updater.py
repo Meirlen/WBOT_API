@@ -9,7 +9,7 @@ def update_yandex_token(new_token):
     json_data = {
                 "token": new_token
                 }
-    response = requests.post('https://hmouv.localtonet.com/webhook/yandex_token_update',json=json_data)
+    response = requests.post('http://165.22.13.172:8000/webhook/yandex_token_update',json=json_data)
 
     print(response.status_code)
 
@@ -40,7 +40,7 @@ def get_new_token():
 import time
 def update_token_by_timer():
     while True :
-        print("Update Token")
+        print("Yandex token successfully updated")
         new_token = get_new_token()
         update_yandex_token(new_token)
         time.sleep(1800)
