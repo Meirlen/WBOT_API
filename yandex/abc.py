@@ -146,7 +146,7 @@ async def get_orders_status(orders):
 
 from sqlalchemy import and_, or_, not_
 
-# get order ids with status search_car from db
+# get  yandex order ids with status search_car from db
 def get_active_orders():
      ids = []
      db = get_db()
