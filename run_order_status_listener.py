@@ -1,9 +1,21 @@
 
 
-from yandex.abc import *
+# from yandex.abc import *
 
-run_get_status_def()
+# run_get_status_def()
 
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
+print("AAAAAAAA \n")
 
 
 
