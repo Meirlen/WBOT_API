@@ -1,15 +1,22 @@
 
 
-from yandex.abc import *
+import threading
 
-counter = 0
-while True :
-    start_time = time.time()
-    print("AAAAAAAA "+str(counter)+"\n")
+
+def get_count():
+    counter = 0
+
+    threading.Timer(5.0, get_count).start()
     counter+=1
+    records = counter
+    print("Getting count...", str(records))
 
-  
-    time.sleep(10)
+
+    return str(counter)
+
+get_count()
+
+
 
 
 
