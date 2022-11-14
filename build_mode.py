@@ -2,12 +2,16 @@
 # PROD
 # File: database.py
 SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@postgres/alem'
+# index.html
+#  const base_url = "http://165.22.13.172:8000"
 
 
 
 # DEV
 # File: database.py
 SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
+# index.html
+#  const base_url = "https://02qyk.localtonet.com"
 
 
 
@@ -62,8 +66,15 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # docker-compose up --force-recreate --build -d
 # docker image prune -f
 
-#Delete all containers
+# Stop all containers
+# docker kill $(docker ps -q)
+
+# Delete all containers
 # docker rm -f $(docker ps -aq)
+
+# Clear db cash
+# docker-compose down --volumes
+
 
 # git rm -r --cached .
 # git add .

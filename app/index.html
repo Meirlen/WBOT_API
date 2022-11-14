@@ -709,10 +709,15 @@
 
 
 
-    // const base_url = "http://165.22.13.172:8000"
+    const base_url = "http://165.22.13.172:8000"
+    // const base_url = "https://02qyk.localtonet.com"
+
+    // 
 
     // const apiUrl = 'http://127.0.0.1:8000/webhook/get_suggest?q=';
-    const apiUrl = 'https://02qyk.localtonet.com/webhook/get_suggest?q=';
+    const apiUrl = base_url+ '/webhook/get_suggest?q=';
+
+
     const skipedKind = [
         'street', 'ERT_ORGANIZATION_FAKE_CHAIN'
     ];
@@ -1071,7 +1076,7 @@
             console.log(json)
 
             $.ajax({
-                url: "https://02qyk.localtonet.com/order",
+                url: base_url+"/order",
                 type: "post",
                 data: JSON.stringify(json),
                 dataType: 'json',
@@ -1150,8 +1155,8 @@
 
             currentRequest = $.ajax({
                 
-                // url: "http://127.0.0.1:8000/order/estimate",
-                url: "https://02qyk.localtonet.com/order/estimate",
+                // url: "165.22.13.172:8000/order/estimate",
+                url: base_url + "/order/estimate",
                 type: "post",
                 data: JSON.stringify(json),
                 dataType: 'json',
