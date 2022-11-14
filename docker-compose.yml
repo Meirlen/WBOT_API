@@ -34,8 +34,10 @@ services:
         - "5050:80"   
 
   token_listener:
-      build: ./
-      command: python ./run_order_status_listener.py
+      build: .
+      volumes:
+      - ./:/usr/src/app
+      command: ["python23", "run_order_status_listener.py"]
 
 
 
