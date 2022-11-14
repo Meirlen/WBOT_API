@@ -2,20 +2,15 @@
 
 from yandex.abc import *
 
-# run_get_status_def()
+counter = 0
+while True :
+    start_time = time.time()
+    print("AAAAAAAA "+str(counter)+"\n")
+    counter+=1
 
-print("AAAAAAAA 123\n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
-print("AAAAAAAA \n")
+  
+    time.sleep(10)
+
 
 
 
