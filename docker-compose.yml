@@ -35,9 +35,7 @@ services:
 
   token_listener:
       build: ./
-      ports:
-        - 8001:8001
-      command: python3 ./run_order_status_listener.py
+      command: python ./run_order_status_listener.py
 
 
 
