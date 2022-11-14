@@ -8,12 +8,18 @@ def get_count():
 
     threading.Timer(5.0, get_count).start()
     counter+=1
-    records = counter
+    records = get_records()
     print("Getting count...", str(records))
 
 
     return str(counter)
 
+import random
+def get_records():
+
+    return random.randint(3, 9)
+
+    
 get_count()
 
 
