@@ -11,6 +11,7 @@ def update_order_status(order_id,new_status):
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
     order_query.update({"status":new_status}, synchronize_session=False)    
     db.commit()
+    # db.close()
 
 
 def get_active_orders():
@@ -75,6 +76,6 @@ def run_get_status_def():
         start_time = time.time()
         get_active_orders()
         print("--- %s seconds ---" % (time.time() - start_time))    
-        time.sleep(30)
+        time.sleep(10)
 
 run_get_status_def()        
