@@ -37,8 +37,8 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # curl -fsSL https://get.docker.com -o get-docker.sh
 
 
-#  git commit -m "change yandex configs"
-#  git config --global user.email "miko_982@mail.ru"
+#  git commit -m "add order status listener"
+#  git config --global user.semail "miko_982@mail.ru"
 #  git config --global user.name "Meirlen"
 #  git rm -r --cached .
 # git push origin master

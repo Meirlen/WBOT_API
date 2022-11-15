@@ -14,8 +14,8 @@ def send_greet_message(phone_number,name,user_id):
 
 def send_template_ask_fill_address(phone_number,user_id):
     rows = []
-    rows.append(TemplateRow("1","?user_id="+user_id))
-    request_body = TemplateRequestBody('ask_fill_address_2','ask_fill_address_2',rows)
+    rows.append(TemplateRow("1","?user_id="+str(user_id)))
+    request_body = TemplateRequestBody('ask_fill_address_3','ask_fill_address_3',rows)
     send_template(phone_number,request_body)
 
 
@@ -104,26 +104,31 @@ def send_driver_assigned_info(phone_number,driver_info:DriverInfo):
 
 
 
-def send_driver_not_found(phone_number):
-    rows = []
-    footer = None
-    header =''
-    body = '💁 *-К сожалению в Яндекс машина не найдена. Продолжить поиск?*\n\n"'
-    # rows.append(Button(CREATE_NEW_ORDER))
-    rows.append(Button("Прололжить"))
-    request_body = ButtonsRequestBody(header, body,footer,rows)
-    send_message_with_buttons(phone_number,request_body)
+def send_driver_not_found(phone_number,user_id):
 
-def send_car_find_info(phone_number):
-    rows = []
-    footer = None
-    header =''
-    body = '💁 *- Мы нашли вам машину.*\n\n _к вам выехала мазда 666 с гос номером 897_\n_Ожидайте.._'
-    # rows.append(Button(CREATE_NEW_ORDER))
-    rows.append(Button("🚕 Карта"))
-    rows.append(Button("⭕ Отмена"))
-    request_body = ButtonsRequestBody(header, body,footer,rows)
-    send_message_with_buttons(phone_number,request_body)
+    body = '💁 *-К сожалению машина не найдена. Вы сможете продолжить поиск в других агрегаторах.*'
+
+    send_message(phone_number,body)
+    send_template_ask_fill_address(phone_number,user_id)
+
+
+def send_order_completed_message(phone_number,user_id):
+
+    body = '💁 *-Спасибо за поездку!*\n *Не забудьте сохранить нашего бота у себя в контактах.*'
+
+    send_message(phone_number,body)
+    send_template_ask_fill_address(phone_number,user_id)
+
+# def send_car_find_info(phone_number):
+#     rows = []
+#     footer = None
+#     header =''
+#     body = '💁 *- Мы нашли вам машину.*\n\n _к вам выехала мазда 666 с гос номером 897_\n_Ожидайте.._'
+#     # rows.append(Button(CREATE_NEW_ORDER))
+#     rows.append(Button("🚕 Карта"))
+#     rows.append(Button("⭕ Отмена"))
+#     request_body = ButtonsRequestBody(header, body,footer,rows)
+#     send_message_with_buttons(phone_number,request_body)
 
 
 

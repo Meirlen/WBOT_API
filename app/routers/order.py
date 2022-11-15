@@ -123,7 +123,16 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
         # send to whatsapp user order created message
 
         from_address = order.route[0].short_text
-        to_address =  order.route[1].short_text
+
+        to_address_array = order.route[1:]
+        if len(to_address_array) == 1:
+            to_address =  order.route[1].short_text
+        else:    
+            to_address =  ""
+            for address in to_address_array:
+                to_address = to_address + " "+ address.short_text + ", "
+
+
         send_order_info(
                         user.phone_number,
                         from_address,
@@ -172,7 +181,7 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
 
     # if yandex_price_info == None:
     # yandex_price_info = get_price_by_route(route_array)
-    yandex_price_info = get_price_by_route(route_array)
+    yandex_price_info = None # get_price_by_route(route_array)
     baursak_price_info = get_price_by_route_baursak(route_array)
     region_price_info = get_price_by_route_region(route_array)
 

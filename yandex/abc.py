@@ -146,7 +146,7 @@ async def get_orders_status(orders):
 
 from sqlalchemy import and_, or_, not_
 
-# get  yandex order ids with status search_car from db
+# get order ids with status search_car from db
 def get_active_orders():
      ids = []
      db = get_db()
@@ -193,7 +193,7 @@ def send_driver_not_found_info_to_whatsapp(user_id):
        print('error')
     else:
        phone_number = user.phone_number
-       send_driver_not_found(phone_number) 
+       send_driver_not_found(phone_number,user_id) 
 
 
 def handle_driver_object(response,order_info):

@@ -13,6 +13,11 @@ class Order(Base):
 
     order_id = Column(Integer, primary_key=True, nullable=False)
     status = Column(String, nullable=False,server_default='search_car') 
+    # search_car
+    # assigned
+    # arrived
+    # expired
+    # completed
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     user_id = Column(Integer, ForeignKey(
