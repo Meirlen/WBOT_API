@@ -76,6 +76,6 @@ def run_get_status_def():
         start_time = time.time()
         get_active_orders()
         print("--- %s seconds ---" % (time.time() - start_time))    
-        time.sleep(10)
+        time.sleep(30)
 
 run_get_status_def()        
