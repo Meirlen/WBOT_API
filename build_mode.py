@@ -59,7 +59,7 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # docker-compose up
 
 # Delete all local images
-# docker rmi -f $(docker images -aq)
+# docker rmi -f $(docker images -aq) 
 
 # Для запуска докер образа docker-compose up
 # Для обновления:
@@ -82,7 +82,8 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # git add .
 
 
-# Rasa 
-# rasa run --enable-api
-# rasa run actions
-# rasa shell --debug
+
+cd WBOT_API
+git fetch
+git pull
+docker-compose up --force-recreate --build -d

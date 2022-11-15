@@ -25,6 +25,7 @@ def get_active_orders():
 
     
     curr_time = datetime.now(timezone.utc)
+    print("Current time: ", curr_time)
     counter = 0
 
     for row in rs:
