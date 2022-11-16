@@ -29,6 +29,7 @@ class OrderCreate(BaseModel):
     user_id: int
     app_type:str
     tariff:str
+    comment:str
 
 class UpdateYToken(BaseModel):
     token:str

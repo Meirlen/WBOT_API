@@ -34,7 +34,7 @@ def search_car_state(body_content):
     request_body = ButtonsRequestBody(header, body_content,footer,rows)
     return request_body
 
-def order_body(from_address,to_address,aggregator,tariff,price):
+def order_body(from_address,to_address,aggregator,tariff,price,comment):
     
         price_trip = "Какой то текст"
         comment = "Какой то текст"
@@ -45,6 +45,9 @@ def order_body(from_address,to_address,aggregator,tariff,price):
         msg += '▪️ <b>' + str(from_address).strip()+'</b>\n'
         if to_address != 'STR' and to_address != None:
             msg += '▪️ <b>' + str(to_address.strip())+'</b>\n\n'
+
+        if comment != None:
+           msg += '\n 🚖 Комментарий водителю: <b>' + aggregator+',</b> \n' + comment+''     
         msg += '\n 🚖 Такси <b>' + aggregator+',</b> ' + tariff+''
         msg += '\n 🪙 <b>' + str(price)+' ₸</b>'
 
@@ -58,9 +61,9 @@ def order_body(from_address,to_address,aggregator,tariff,price):
         return msg
 
 
-def send_order_info(phone_number,from_address,to_address,aggregator,tariff,price):
+def send_order_info(phone_number,from_address,to_address,aggregator,tariff,price,comment):
     
-    send_message_with_buttons(phone_number,search_car_state(order_body(from_address,to_address,aggregator,tariff,price)))
+    send_message_with_buttons(phone_number,search_car_state(order_body(from_address,to_address,aggregator,tariff,price,comment)))
         
 def send_price_info(phone_number, yandex_econom, yandex_bussines):
     send_message_with_buttons(phone_number,price_list_with_btn("'💁 *- Тарифы в Яндекс Такси*", yandex_econom, yandex_bussines))

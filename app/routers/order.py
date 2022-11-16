@@ -88,6 +88,11 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
 
     app_type = order.app_type
     tariff= order.tariff
+
+    comment= order.comment
+    if comment == "":
+       comment = None 
+
     price_info = None
     aggregator = None
     if tariff == "e":
@@ -132,14 +137,14 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
             for address in to_address_array:
                 to_address = to_address + " "+ address.short_text + ", "
 
-
         send_order_info(
                         user.phone_number,
                         from_address,
                         to_address,
                         aggregator,
                         tariff,
-                        price)
+                        price,
+                        comment)
 
         address = from_address + "  \n"+ to_address
         send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n '+ aggregator +  " \n "+ str(user.phone_number)+"\n"+address)               
