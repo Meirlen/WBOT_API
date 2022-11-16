@@ -147,7 +147,7 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
                         comment)
 
         address = from_address + "  \n"+ to_address
-        send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n '+ aggregator +  " \n "+ str(user.phone_number)+"\n"+address)               
+        send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n '+ aggregator +  " \n "+ str(user.phone_number)+"\n"+address+"\n Комментарий: "+str(comment))               
 
     return {"order_id": order_id, "app_type": app_type}
 
