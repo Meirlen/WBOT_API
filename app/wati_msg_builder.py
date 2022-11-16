@@ -37,7 +37,6 @@ def search_car_state(body_content):
 def order_body(from_address,to_address,aggregator,tariff,price,comment):
     
         price_trip = "Какой то текст"
-        comment = "Какой то текст"
 
 
         msg = "🕒 <b>Идет поиск машины....<b>"+'\n\n'+ "_Ожидайте сообщения с номером автомобиля_\n\n"
