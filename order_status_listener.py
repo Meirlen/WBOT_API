@@ -1,4 +1,4 @@
-from app.database import get_db
+from app.database import get_db_singleton
 from app import models, schemas as schemas
 from sqlalchemy import and_, or_
 from datetime import datetime, timezone
@@ -6,18 +6,16 @@ from app.wati_msg_builder import *
 
 
 
-def update_order_status(order_id,new_status):
-    db = next(get_db())
+def update_order_status(order_id,new_status,db):
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
     order_query.update({"status":new_status}, synchronize_session=False)    
     db.commit()
-    # db.close()
 
 
 def get_active_orders():
     yandex_order_ids = []
     ids = []
-    db = next(get_db())
+    db = get_db_singleton()
 
 
     # get last order of user if order status == 'assigned','arrived','search_car'
@@ -47,9 +45,9 @@ def get_active_orders():
 
         if status == "assigned" or status == "arrived":
             if minutes > 15: 
-                db = next(get_db())
+                # db = next(get_db())
                 user = db.query(models.User).filter(models.User.id == user_id).first()
-                update_order_status(order_id,"completed")
+                update_order_status(order_id,"completed",db)
                 phone_number = user.phone_number
                 send_order_completed_message(phone_number,user_id) 
                 print("Спасибо за поездку!")
@@ -58,14 +56,16 @@ def get_active_orders():
             # Нужно доработать логику когда будем подключать другие такси
             # Как в яндекс реализаций будем запрашивать текущий статус заказа у агрегаторов
             if minutes > 6: 
-                db = next(get_db())
+                # db = next(get_db())
                 user = db.query(models.User).filter(models.User.id == user_id).first()
-                update_order_status(order_id,"expired")
+                update_order_status(order_id,"expired",db)
                 phone_number = user.phone_number
-                send_driver_not_found(phone_number,user_id) 
-                print("К сожалению нет свободных машин!")         
-        print('---------------------------------------')
 
+                send_driver_not_found(phone_number,user_id) 
+                print("К сожалению нет свободных машин!")  
+       
+        print('---------------------------------------')
+    db.close()
     if counter<1:
        print("Нет активных заказов")
 
@@ -76,6 +76,9 @@ def run_get_status_def():
         start_time = time.time()
         get_active_orders()
         print("--- %s seconds ---" % (time.time() - start_time))    
-        time.sleep(30)
+        time.sleep(10)
+
+
+
 
 run_get_status_def()        

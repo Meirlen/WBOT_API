@@ -15,11 +15,22 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
+def get_db_singleton():
+    db = SessionLocal()
+    print("Db start connectiion")
+    print(engine.pool.status())
+    try:
+        return db
+    finally:
+        print('Db session closed')
+        db.close()
+
 def get_db():
     db = SessionLocal()
     print("Db start connectiion")
+    print(engine.pool.status())
     try:
         yield db
     finally:
         print('Db session closed')
-        db.close()
+        db.close()        
