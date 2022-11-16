@@ -46,7 +46,7 @@ def order_body(from_address,to_address,aggregator,tariff,price,comment):
             msg += '▪️ <b>' + str(to_address.strip())+'</b>\n\n'
 
         if comment != None:
-           msg += '\n 💬 <b>Комментарий: </b>' + comment+''     
+           msg += '\n 💬 <b>Комментарий:</b>' + comment+''     
         msg += '\n 🚖 Такси <b>' + aggregator+',</b> ' + tariff+''
         msg += '\n 🪙 <b>' + str(price)+' ₸</b>'
 

@@ -121,9 +121,9 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
 
     if  price_info != None:
             if order.tariff == "e":
-                price = price_info[0]['price']
+                price = price_info[1]['price']
             if order.tariff == "c":
-                price = price_info[1]['price']    
+                price = price_info[0]['price']    
     if user:
         # send to whatsapp user order created message
 
