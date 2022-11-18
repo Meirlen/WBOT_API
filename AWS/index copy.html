@@ -1,0 +1,1312 @@
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Taxi</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <style>
+        body {
+            background: #fafafa;
+            font-family: 'YS Text', 'Helvetica Neue', Arial, sans-serif;
+            background-size: auto 150%;
+            background-repeat: no-repeat;
+            background-position: 30% 50%;
+        }
+        .buttonload {
+            background-color: transparent; /* Green background */
+            height: 56px;
+            border: none; /* Remove borders */
+            color: black; /* White text */
+            padding: 12px 24px; /* Some padding */
+            font-size: 16px; /* Set a font-size */
+            opacity: 0.75;
+            width: 100%;
+
+        }
+        
+        .search_container{
+            background: #fafafa;
+            font-family: 'YS Text', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f6cd1a;
+            background-image: url(https://storage.googleapis.com/taxi-imagees/site/map.svg);
+            background-size: auto 150%;
+            background-repeat: no-repeat;
+            background-position: 30% 50%;
+            margin-top: -8px;
+        }
+        .form_wrapper {
+            width: 90%;
+            margin: 8px auto;
+            margin-top: 16px;
+            background: #f5f4f2;
+            box-shadow: 0 8px 20px rgb(117 115 111 / 20%);
+            border-radius: 24px;
+        }
+        .comment_wrapper {
+            width: 90%;
+            margin: 8px auto;
+            margin-top: 16px;
+            background: #f5f4f2;
+            box-shadow: 0 8px 20px rgb(117 115 111 / 20%);
+            border-radius: 24px;
+        }
+        .header_wrapper {
+            width: 90%;
+            margin: 8px auto;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            padding-top: 8px;
+        }
+
+        .header_wrapper div {
+            color: #35353a;
+            font-weight: 700;
+            font-size: 20px;
+            font-family: Arial,Helvetica,sans-serif;
+            letter-spacing: 0.018em;
+            line-height: 1.45;
+            font-size: 15px;
+
+        }
+        .header_wrapper img {
+            width: 45px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgb(198 126 0 / 80%);
+            margin-right: 22px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+        .section-titles {
+            text-align: center;
+        }
+        .section-titles p {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.75;
+            margin: 0;
+            color: #35353a;
+            font-family: Arial,Helvetica,sans-serif;
+            letter-spacing: 0.018em;
+            line-height: 1.45;
+
+        }
+        .route_wrapper {
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+            padding: 0px 16px;
+            cursor: pointer;
+            background: #fff;
+            border-radius: 24px;
+        }
+        .input-wrapper-comment {
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+            padding: 0px 16px;
+            cursor: pointer;
+            background: #fff;
+            border-radius: 24px;
+        }
+        .input-wrapper.sortable.ui-sortable-helper {
+            box-shadow: rgb(117, 115, 111, 0.2) 0px 8px 20px;
+        }
+
+        .icon {
+            flex: 0 0 24px;
+            margin-right: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-repeat: no-repeat;
+            background-position: 50%;
+            background-size: contain;
+        }
+
+        .icon-sort {
+            display: none;
+            flex: 0 0 24px;
+            margin-right: 16px;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 1.5a.5.5 0 00.5.5h19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H.5a.5.5 0 00-.5.5v1zm0 4a.5.5 0 00.5.5h19a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H.5a.5.5 0 00-.5.5v1zM.5 10a.5.5 0 01-.5-.5v-1A.5.5 0 01.5 8h19a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H.5z' fill='%239E9B98'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 50%;
+            background-size: 18px;
+        }
+
+        .icon-plus {
+            flex: 0 0 24px;
+            margin-right: 13px;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='28' height='24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.5 0a.5.5 0 00-.5.5V8H.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H8v7.5a.5.5 0 00.5.5h1a.5.5 0 00.5-.5V10h7.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H10V.5a.5.5 0 00-.5-.5h-1z' fill='currentColor'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg width='28' height='24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.5 0a.5.5 0 00-.5.5V8H.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H8v7.5a.5.5 0 00.5.5h1a.5.5 0 00.5-.5V10h7.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H10V.5a.5.5 0 00-.5-.5h-1z' fill='currentColor'/%3E%3C/svg%3E");
+            background-color: currentColor;
+            margin-left: 3px;
+            margin-top: 2px;
+        }
+
+        .icon-close {
+            display: none;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto -9px auto 0;
+            cursor: pointer;
+            color: #b2b2b2;
+            transition: color .15s linear;
+            width: 36px;
+            height: 36px;
+            z-index: 3;
+            right: 0;
+            background-repeat: no-repeat;
+            background-position: 50%;
+            padding: 9px;
+        }
+
+        .icon-close:hover {
+            color: #000;
+        }
+
+        .input-wrapper.active-close:not(.ui-sortable-helper):not(.new-input) .icon-close {
+            display: block;
+        }
+
+        .input-wrapper.sortable .icon {
+            display: none;
+        }
+
+        .input-wrapper.sortable .icon-sort {
+            display: flex;
+        }
+
+        .input-wrapper.sortable.active:not(.ui-sortable-helper) .icon-sort {
+            display: none;
+        }
+
+        .input-wrapper.sortable.active:not(.ui-sortable-helper) .icon {
+            display: flex;
+        }
+
+        .section-search_result_item {
+            -webkit-text-size-adjust: 100%;
+            box-sizing: border-box;
+            font-family: Arial,Helvetica,sans-serif;
+            letter-spacing: 0.018em;
+            line-height: 1.45;
+            border-bottom: 1px solid #e6e6ec;
+            padding-bottom: 10;
+            padding-top: 10;
+
+            height: auto !important;
+        }
+        [id=econom_baursak] {
+            -webkit-text-size-adjust: 100%;
+            font-family: Arial,Helvetica,sans-serif;
+            letter-spacing: 0.018em;
+            padding-bottom: 10;
+            padding-top: 10;
+            height: auto !important;
+        }
+        .section-search_result_item_servis_name picture img {
+                width: 36px;
+                height: 36px;
+                border-radius: 11px;
+        }
+        .section-search_result_item_servis_name h3 {
+                font-size: 15px;
+                margin-block-start: 1em;
+                margin-block-end: 1em;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
+                font-weight: bold;
+        }
+    
+        .section-search_result_item_servis_name {
+                display: flex;
+                align-items: center;
+            }
+        .section-search_result_item_servis{
+            -webkit-text-size-adjust: 100%;
+            box-sizing: border-box;
+            font-family: Arial,Helvetica,sans-serif;
+            letter-spacing: 0.018em;
+            line-height: 1.45;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: Arial,Helvetica,sans-serif;
+            letter-spacing: 0.018em;
+            line-height: 1.45;
+        }
+        .delete-point {
+            display: none;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto -9px auto 0;
+            right: 0;
+            flex-shrink: 0;
+            width: 36px;
+            height: 90%;
+            cursor: pointer;
+            border: 0px;
+            background: #fff;
+        }
+
+        .delete-point::before {
+            transition: background-color .15s linear;
+        }
+
+        .delete-point::after {
+            transform: scale(0);
+        }
+
+        ._2V52WSBGUES6TT51SM3STd {
+            width: 14px;
+            height: 18px;
+            margin: auto;
+            background: url("data:image/svg+xml,%3Csvg width='14' height='18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M9.646.146L10.5 1h3a.5.5 0 01.5.5V3H0V1.5A.5.5 0 01.5 1h3l.854-.854A.5.5 0 014.707 0h4.586a.5.5 0 01.353.146zM1 17.5a.5.5 0 00.5.5h11a.5.5 0 00.5-.5V4H1v13.5zM3 6h8v10H3V6z' fill='%23FA6A3C'/%3E%3C/svg%3E") no-repeat;
+        }
+
+        .input-wrapper.sortable:not(.active-close):not(.active) .delete-point {
+            display: flex;
+        }
+
+        .input-wrapper.new-input {
+            padding-bottom: 3px;
+        }
+
+        input.address {
+            width: 100%;
+            padding: 17px 25px 23px 0;
+            border-width: 0;
+            border-radius: 0;
+            transition: padding .3s;
+            outline: none;
+            border-bottom: 1px solid rgba(210, 208, 204, .5);
+            color: #21201f;
+        }
+        input.comment {
+            width: 100%;
+            padding: 10px 25px 10px 0;
+            border-width: 0;
+            border-radius: 0;
+            transition: padding .3s;
+            outline: none;
+            border-bottom: 1px solid rgba(210, 208, 204, .5);
+            color: #21201f;
+        }
+
+        input.address::placeholder {
+            color: #9e9b98;
+        }
+
+        input.address:focus {
+            border-bottom: 1px solid #fcb900;
+        }
+
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            background: #fff;
+            box-shadow: 0 8px 20px rgb(117 115 111 / 20%);
+            width: 100%;
+            border-radius: 24px;
+            border: none;
+            overflow: hidden;
+            max-height: 280px;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            padding: 4px 8px;
+        }
+
+        .autocomplete-scroll-wrapper div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .autocomplete-scroll-wrapper div::before {
+            position: absolute;
+            right: 8px;
+            bottom: 0;
+            left: 8px;
+            height: 1px;
+            content: "";
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        .autocomplete-scroll-wrapper div:last-child::before {
+            border-bottom: none;
+        }
+
+        .autocomplete-scroll-wrapper div.hovered-bg {
+            background-color: #e9e9e9;
+        }
+
+        .autocomplete-scroll-wrapper div.hovered-bg::before, .autocomplete-scroll-wrapper div.no-border-bottom::before {
+            border-bottom: none;
+        }
+
+        .autocomplete-scroll-wrapper div.no-results {
+            text-align: center;
+            margin: 4px 0;
+        }
+
+        .autocomplete-scroll-wrapper div h4 {
+            color: #169cdc;
+            font-size: 16px;
+            line-height: 20px;
+            margin-bottom: 0px;
+        }
+
+        .autocomplete-scroll-wrapper div span {
+            font-size: 13px;
+            line-height: 15px;
+            color: #9e9b98;
+        }
+        .submit_wrapper {
+            width: 90%;
+            margin: 8px auto;
+            margin-top: 16px;
+            padding-bottom: 16px;
+
+        }
+        /* .submit_wrapper {
+            width: 100%;
+            padding: 16px;
+        } */
+
+        .section-search_progress {
+            display: none;
+
+        }
+        .section-search_progress_2 {
+            display: none;
+
+        }
+        
+        .price_wrapper {
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            padding: 16px;
+            margin-top: 8px;
+            display: none;
+
+        }
+        .section-search_header {
+            width: 100%;
+            color: #a1a1aa;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-left: 16px;
+            font-family: Arial,Helvetica,sans-serif;
+            letter-spacing: 0.018em;
+            line-height: 1.45;
+            font-size: 16px;
+            display: none;
+
+        }
+        input[type="submit"] {
+            border-radius: 16px;
+            background: #39a938;
+            font-weight: 700;
+            border: none;
+            color: #000;
+            width: 100%;
+            line-height: 56px;
+            font-size: 16px;
+            transition: .15s linear;
+        }
+        .price_btns {
+            border-radius: 16px;
+            background: #fce000;
+            font-weight: 700;
+            border: none;
+            color: #000;
+            width: 40%;
+            line-height: 32px;
+            font-size: 16px;
+            transition: .15s linear;
+        }
+        input[type="submit"]:hover {
+            background: #39a938;
+        }
+
+        input[type="submit"]:disabled {
+            background: #39a938 !important;
+            opacity: 0.75;
+
+        }
+
+  
+        .add-input {
+            display: flex;
+            align-items: center;
+            min-height: 68px;
+            padding: 0px 16px;
+            cursor: pointer;
+            background: #fff;
+            border-radius: 24px;
+            color: #9e9b98;
+        }
+    </style>
+</head>
+<body>
+
+<div class="search_container">   
+<div class="header_wrapper">
+<div class="header_logo" >
+    <img alt="Все Такси логотип" src="data:image/png;base64,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">
+
+</div>
+
+<div class="header_titles">
+    <span>Такси Тандау</span>
+
+</div>
+
+</div>    
+<div class="section-titles">
+    <p>Введите адреса для расчета и заказа такси</p>
+</div>
+
+
+<div class="form_wrapper">
+    <form id="routeForm">
+        <div class="route_wrapper">
+            <div class="input-wrapper">
+                <div class="icon div-icon">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="7" fill="#fc5230"></circle>
+                        <circle cx="12" cy="12" r="4" fill="#fff"></circle>
+                    </svg>
+                </div>
+                <div class="icon-sort div-icon"></div>
+                <div class="autocomplete w-100">
+                    <input type="text" class="address" placeholder="Откуда" data-key="0" value="">
+                    <span class="icon-close" aria-hidden="true">
+                        <svg viewBox="0 0 20 20">
+                            <path focusable="false" width="0" height="0"
+                                  fill="currentColor"
+                                  d="M10,20 C4.5,20 0,15.5 0,10 C0,4.5 4.5,0 10,0 C15.5,0 20,4.5 20,10 C20,15.5 15.5,20 10,20 L10,20 L10,20 L10,20 Z M15,6.4 L13.6,5 L10,8.6 L6.4,5 L5,6.4 L8.6,10 L5,13.6 L6.4,15 L10,11.4 L13.6,15 L15,13.6 L11.4,10 L15,6.4 L15,6.4 L15,6.4 L15,6.4 Z"></path>
+                        </svg>
+                    </span>
+                    <div class="autocomplete-items d-none">
+                        <div class="autocomplete-scroll-wrapper">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sortable-list">
+                <div class="input-wrapper">
+                    <div class="icon div-icon">
+                        <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="7" fill="#000000"></circle>
+                            <circle cx="12" cy="12" r="4" fill="#fff"></circle>
+                        </svg>
+                    </div>
+                    <div class="icon-sort div-icon"></div>
+                    <div class="autocomplete w-100">
+                        <input type="text" class="address" placeholder="Куда?" data-key="1" value="">
+                        <span class="icon-close" aria-hidden="true">
+                            <svg viewBox="0 0 20 20">
+                                <path focusable="false" width="0" height="0"
+                                      fill="currentColor"
+                                      d="M10,20 C4.5,20 0,15.5 0,10 C0,4.5 4.5,0 10,0 C15.5,0 20,4.5 20,10 C20,15.5 15.5,20 10,20 L10,20 L10,20 L10,20 Z M15,6.4 L13.6,5 L10,8.6 L6.4,5 L5,6.4 L8.6,10 L5,13.6 L6.4,15 L10,11.4 L13.6,15 L15,13.6 L11.4,10 L15,6.4 L15,6.4 L15,6.4 L15,6.4 Z"></path>
+                            </svg>
+                        </span>
+                        <button type="button" class="delete-point" autocomplete="off" title="Удалить точку">
+                            <div class="_2V52WSBGUES6TT51SM3STd"></div>
+                        </button>
+                        <div class="autocomplete-items d-none">
+                            <div class="autocomplete-scroll-wrapper">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-input" id="cloneInput">
+                <div class="icon-plus"></div>
+                Добавить остановку
+            </div>
+        </div>
+   
+
+
+        <!-- Clone objects !-->
+        <div class="d-none clone-list-item">
+            <h4></h4>
+            <span></span>
+        </div>
+
+        <div class="input-wrapper d-none clone-input-item">
+            <div class="icon div-icon">
+                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="7" fill="#000000"></circle>
+                    <circle cx="12" cy="12" r="4" fill="#fff"></circle>
+                </svg>
+            </div>
+            <div class="icon-sort div-icon"></div>
+            <div class="autocomplete w-100">
+                <input type="text" class="address" placeholder="Куда?" data-key="">
+                <span class="icon-close" aria-hidden="true">
+                    <svg viewBox="0 0 20 20">
+                        <path focusable="false" width="0" height="0"
+                              fill="currentColor"
+                              d="M10,20 C4.5,20 0,15.5 0,10 C0,4.5 4.5,0 10,0 C15.5,0 20,4.5 20,10 C20,15.5 15.5,20 10,20 L10,20 L10,20 L10,20 Z M15,6.4 L13.6,5 L10,8.6 L6.4,5 L5,6.4 L8.6,10 L5,13.6 L6.4,15 L10,11.4 L13.6,15 L15,13.6 L11.4,10 L15,6.4 L15,6.4 L15,6.4 L15,6.4 Z"></path>
+                    </svg>
+                </span>
+                <button type="button" class="delete-point" autocomplete="off" title="Удалить точку">
+                    <div class="_2V52WSBGUES6TT51SM3STd"></div>
+                </button>
+                <div class="autocomplete-items d-none">
+                    <div class="autocomplete-scroll-wrapper">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End clone objects !-->
+    </form>
+</div>
+
+<div class="comment_wrapper">
+    <div class="input-wrapper-comment">
+    
+            <input id="user_comment" type="text" class="comment" placeholder="Комментарий водителю..." data-key="0" value="">
+            <span class="icon-close" aria-hidden="true">
+                <svg viewBox="0 0 20 20">
+                    <path focusable="false" width="0" height="0"
+                          fill="currentColor"
+                          d="M10,20 C4.5,20 0,15.5 0,10 C0,4.5 4.5,0 10,0 C15.5,0 20,4.5 20,10 C20,15.5 15.5,20 10,20 L10,20 L10,20 L10,20 Z M15,6.4 L13.6,5 L10,8.6 L6.4,5 L5,6.4 L8.6,10 L5,13.6 L6.4,15 L10,11.4 L13.6,15 L15,13.6 L11.4,10 L15,6.4 L15,6.4 L15,6.4 L15,6.4 Z"></path>
+                </svg>
+            </span>
+          
+    </div>
+</div>
+
+
+
+
+<div class="submit_wrapper"  id="price_calc_container">
+    <input type="submit" id="price_calc_btn" value="Рассчитать" disabled>
+    <div class="section-search_progress" id="search-progress">
+        <button class="buttonload" id="spinner1">
+            <i class="fa fa-spinner fa-spin"></i> Получаем цены такси в реальном времени....
+          </button>
+    </div>
+</div>
+
+
+  
+
+
+</div> 
+
+<div class="section-search_progress_2" id="search-progress2">
+    <button class="buttonload" id="spinner1">
+        <i class="fa fa-spinner fa-spin"></i> Заказываем такси....
+      </button>
+</div>
+<div class="search_result_container">  
+    
+
+
+    <div class="section-search_header" id = "search_econom_header">Эконом</div>
+
+    <div class="price_wrapper" id="price_list_container">
+        <div class="section-search_result_item" id="econom_yandex">
+            <div class="section-search_result_item_servis">
+                <div class="section-search_result_item_servis_name">
+                    <picture>
+                        <img src="https://storage.googleapis.com/taxi-imagees/logo/png/jpg/2.jpg" loading="lazy" alt="Яндекс Такси">
+                    </picture>
+                    <h3 style="margin-left: 10px;">Яндекс Такси</h3>
+                </div>
+                <button id="btn_econom_yandex"  class="price_btns" onClick="reply_click(this.id)">Не доступен</button>
+            </div>
+            
+        </div>
+        <div class="section-search_result_item"  id="econom_region">
+            <div class="section-search_result_item_servis">
+                <div class="section-search_result_item_servis_name">
+                    <picture>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEVXFmhVb81LvVhdSQhUiZllYUc8MrcBdLS2EVvGrpBl9g9rH6jV89W-ivviRWq2pNoPY&usqp=CAU" loading="lazy" alt="InDriver">
+                    </picture>
+                    <h3 style="margin-left: 10px;">9 регион</h3>
+                </div>
+                <button id="btn_econom_region"  class="price_btns" onClick="reply_click(this.id)">Не доступен</button>
+            </div>
+            
+        </div>
+        <div class="section-search_result_item"  id="econom_baursak" >
+            <div class="section-search_result_item_servis">
+                <div class="section-search_result_item_servis_name">
+                    <picture>
+                        <img src="http://qostanai.ru/upload/000/u1/e/a/taksi-baursak-photo-place.jpg" loading="lazy" alt="InDriver">
+                    </picture>
+                    <h3 style="margin-left: 10px;">Бауырсак</h3>
+                </div>
+                <button id="btn_econom_baursak"  class="price_btns" >Не доступен</button>
+       
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+<script>
+
+
+    // // to save user_id in cookies
+    let searchParams = new URLSearchParams(window.location.search);
+    user_id =  searchParams.has('user_id') ? searchParams.get('user_id') : null;
+    if (user_id!=null) {
+        setCookie('user_id_cookie',user_id,30);
+    }
+    var x = getCookie('user_id_cookie');
+    console.log("user_id", x)
+
+    function setCookie(name,value,days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        console.log(name + "=" + (value || "")  + expires + "; path=/")
+
+    }
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+
+        console.log(ca)
+
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+    function eraseCookie(name) {   
+        document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
+
+    function reply_click(clicked_id)
+    {
+
+    }
+
+
+    function hide_element(element) {
+        element.style.display = "none";
+    }
+
+    function show_element(element) {
+        element.style.display = "block";
+
+    }
+
+
+
+    var config = {
+        minChar: 1,
+        delay: 0,
+        boundedBy: [[49.651690, 72.913439], [50.002202, 73.408191]],
+        redirect: 'https://api.whatsapp.com/send?phone=77711474209'
+    };
+
+
+
+
+
+
+    const base_url = "http://165.22.13.172:8000"
+    // const base_url = "https://02qyk.localtonet.com"
+
+
+    const searchUrl = 'https://aiapp.kz/send.php?q=';
+
+
+    const skipedKind = [
+        'street', 'ERT_ORGANIZATION_FAKE_CHAIN'
+    ];
+
+    $(function () {
+        let $cloneList = $('.clone-list-item');
+        let $cloneInput = $('.clone-input-item');
+        let $routeWrapper = $('.route_wrapper');
+
+        let oldQuery = {
+            0: null,
+            1: null
+        };
+        let inputValues = {
+            0: null,
+            1: null
+        };
+        let dataValues = {
+            0: null,
+            1: null
+        };
+        let sortableOn = false;
+        let timeout = undefined;
+        let currentRequest = null;
+        let nextKey = $('.input-wrapper:not(.clone-input-item)').length;
+
+        $(document).on('keyup click change', '.address', function () {
+            let key = parseInt($(this).data('key'));
+            let $firstInput = $('input.address[data-key=0]');
+            if (key && (inputValues[0] === null || !inputValues[0].length)) {
+                $firstInput.focus();
+                $firstInput.click();
+                return;
+            }
+
+            if ($(this).val().length) {
+                $(this).closest('.input-wrapper').addClass('active-close');
+            } else {
+                $(this).closest('.input-wrapper').removeClass('active-close');
+            }
+
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                search($(this));
+            }, config.delay);
+        });
+
+        function parseResults(data) {
+            try {
+                data = JSON.parse(data);
+
+                var filtered = data.results.filter((item) => {
+                    return typeof item.lat !== 'undefined';
+                });
+                filtered = filtered.filter((item) => {
+                    return skipedKind.indexOf(item.kind) === -1;
+                });
+                filtered = filtered.filter((item) => {
+                    return item.lat >= config.boundedBy[0][0] && item.lat <= config.boundedBy[1][0]
+                        && item.lon >= config.boundedBy[0][1] && item.lon <= config.boundedBy[1][1];
+                });
+
+                filtered = filtered.reverse();
+                filtered.sort((x, y) => {
+                    if (x.kind === "college") {
+                        return 1;
+                    }
+
+                    return -1;
+                });
+                filtered = filtered.slice(0, 8);
+            } catch (e) {
+                return [];
+            }
+
+            return filtered;
+        }
+
+        function search($input) {
+            let $list = $input.closest('.autocomplete').find('.autocomplete-scroll-wrapper');
+            let query = $input.val();
+            let key = parseInt($input.data('key'));
+
+            if (!query.length) {
+                noResults($list);
+                return;
+            }
+
+            if (query === oldQuery[key] || query.length < config.minChar) {
+                $list.closest('.autocomplete-items').removeClass('d-none');
+                return;
+            }
+
+            currentRequest = $.ajax({
+                url: searchUrl + query,
+                beforeSend: function () {
+                    if (currentRequest != null) {
+                        currentRequest.abort();
+                    }
+                }
+            })
+                .done(function (data) {
+                    let items = parseResults(data);
+
+                    oldQuery[key] = query;
+                    $list.find('div').remove();
+
+                    if (!items.length) {
+                        noResults($list);
+                        return;
+                    }
+
+                    items.forEach(function (item) {
+                        let $cloneListItem = $cloneList.clone();
+
+                        $cloneListItem.removeClass('d-none clone-list-item');
+                        $cloneListItem.find('h4').text(item.name);
+                        $cloneListItem.find('span').text(item.desc);
+                        $cloneListItem.data('data', JSON.stringify(item));
+
+                        $list.append($cloneListItem);
+                    });
+
+                    $list.closest('.autocomplete-items').removeClass('d-none');
+                    $list.slimScroll({
+                        size: '0px',
+                        height: 'auto'
+                    });
+                });
+        }
+
+        function noResults($list) {
+            $list.html('<div class="no-results">Ничего не найдено</div>');
+            $list.closest('.autocomplete-items').removeClass('d-none');
+            $list.slimScroll({
+                size: '0px',
+                height: 'auto'
+            });
+        }
+
+        $(document).on('mouseover', '.autocomplete-scroll-wrapper div', function () {
+            if ($(this).hasClass('no-results')) {
+                return;
+            }
+
+            let $list = $(this).closest('.autocomplete');
+            $list.find('div').removeClass('no-border-bottom hovered-bg');
+            $(this).addClass('hovered-bg');
+            $(this).prev().addClass('no-border-bottom');
+        });
+
+        $(document).on('click', '.autocomplete-scroll-wrapper div:not(.no-results)', function () {
+
+            hide_element(document.getElementById('price_list_container'));
+            hide_element(document.getElementById('search_econom_header'));
+            // show_element(document.getElementById('price_calc_container'));
+
+            
+
+
+            let $input = $(this).closest('.autocomplete').find('input');
+            let newVal = $(this).find('h4').text();
+            let key = parseInt($input.data('key'));
+            $input.val(newVal);
+            $('.autocomplete-items').addClass('d-none');
+
+            oldQuery[key] = newVal;
+            inputValues[key] = newVal;
+            dataValues[key] = JSON.parse($(this).data('data'));
+
+            if (key === nextKey - 1) {
+                $input.closest('.input-wrapper').removeClass('new-input');
+                $('.add-input').removeClass('d-none');
+                sortableEnable();
+            }
+
+            if (key === 1) {
+                $('input[type="submit"]').prop('disabled', false);
+            }
+
+            $input.blur();
+        });
+
+        $(document).on('click', function (e) {
+
+            let $target = $(e.target);
+            let $autocomplete = $target.closest('.autocomplete');
+            let showCurrent = false;
+
+            if ($target.hasClass('div-icon')
+                || $target.hasClass('input-wrapper')
+                || $target.localName === 'svg'
+                || $target.localName === 'circle') {
+                $target.closest('.input-wrapper').find('input').blur();
+            }
+
+            if ($autocomplete.length
+                && !$autocomplete.find('.autocomplete-items').hasClass('d-none')
+                && !$target.hasClass('input-wrapper')
+                && !$target.hasClass('div-icon')
+                && $target.localName !== 'svg'
+                && $target.localName !== 'circle') {
+                showCurrent = true;
+            }
+
+            $('.autocomplete-items').each(function (i, elem) {
+                if (!$(elem).closest('.autocomplete').find('input').is(':focus')) {
+                    $(elem).addClass('d-none');
+                }
+            });
+
+            if (showCurrent) {
+                $autocomplete.find('.autocomplete-items').removeClass('d-none');
+            }
+
+            $('.input-wrapper:not(.clone-input-item)').each(function (i, item) {
+                let $input = $(item).find('input');
+                if (!$input.is(':focus')) {
+                    $(item).removeClass('active active-close');
+
+                    if ($(item).hasClass('new-input')) {
+                        $(item).remove();
+                        $('.add-input').removeClass('d-none');
+                    }
+
+                    let key = $input.data('key');
+                    let val = inputValues[key];
+                    let currentVal = $input.val();
+
+                    if (val !== currentVal) {
+                        $input.val(val);
+                        oldQuery[key] = null;
+                    }
+                }
+            });
+        });
+
+        $('#cloneInput').on('click', function () {
+
+            let $prevInput = null;
+            let prevKey = nextKey - 1;
+            do {
+                $prevInput = $('input.address[data-key=' + prevKey + ']');
+                prevKey--;
+                if ($prevInput.length) {
+                    break;
+                }
+            } while (prevKey > 0);
+
+            if (!$prevInput.val().length) {
+                $prevInput.focus();
+                $prevInput.click();
+                return;
+            }
+
+            let $cloneInputItem = $cloneInput.clone();
+
+            $cloneInputItem.removeClass('d-none clone-input-item').addClass('new-input');
+            $cloneInputItem.find('input').attr('data-key', nextKey);
+            $routeWrapper.find('.sortable-list').append($cloneInputItem);
+            $cloneInputItem.find('input').focus().click();
+
+            oldQuery[nextKey] = null;
+            nextKey++;
+            $(this).addClass('d-none');
+        });
+
+        $(document).on('focus', '.address', function () {
+            $(this).closest('.input-wrapper').addClass('active');
+        });
+
+        $(document).on('blur', '.address', function () {
+            clearTimeout(timeout);
+            if (currentRequest != null) {
+                currentRequest.abort();
+            }
+        });
+
+        $(document).on('click', '.icon-close', function () {
+            let $input = $(this).closest('.autocomplete').find('input');
+            $input.val('').change();
+            $input.focus();
+        });
+
+        $(document).on('click', '.delete-point', function () {
+            $(this).closest('.input-wrapper').remove();
+
+            let inputCount = $('.input-wrapper:not(.clone-input-item)').length;
+            if (inputCount === 2) {
+                $('.input-wrapper').removeClass('sortable');
+                sortableOn = false;
+            }
+        });
+        $(document).on('click', '.section-search_result_item', function () {
+
+
+      
+            let searchParams = new URLSearchParams(window.location.search);
+            var user_id = searchParams.has('user_id') ? searchParams.get('user_id') : null
+            if (user_id == null){
+                user_id =  getCookie('user_id_cookie');
+            }
+         
+
+            let data = new FormData();
+            data.append('user_id', user_id);
+
+            var jsonRoutes = []
+
+            $('.input-wrapper:not(.clone-input-item)').each(function (i, item) {
+                let key = parseInt($(item).find('input').data('key'));
+
+                data.append('route[' + i + '][short_text]', dataValues[key].name);
+                data.append('route[' + i + '][fullname]', dataValues[key].desc);
+                data.append('route[' + i + '][geo_point][]', dataValues[key].lat);
+                data.append('route[' + i + '][geo_point][]', dataValues[key].lon);
+                data.append('route[' + i + '][type]', dataValues[key].type);
+                data.append('route[' + i + '][city]', 'Караганда');
+
+
+
+                jsonRoutes.push({
+                                short_text:  dataValues[key].name,
+                                fullname:  dataValues[key].name,
+                                geo_point:[dataValues[key].lon,dataValues[key].lat],
+                                type:  dataValues[key].type,
+                                city:  'Караганда',
+
+                            });
+            });
+
+            ''
+            // var object = {};
+            // data.forEach(function(value, key){
+            //     object[key] = value;
+            // })
+
+            id=this.id
+            app_type = NaN
+            app_type = NaN
+            tariff = "e"
+            if (id == "econom_region"){
+                app_type = "r"
+            }
+            if (id == "econom_baursak"){
+                app_type = "b"
+            }
+            if (id == "econom_yandex"){
+                app_type = "y"
+            }
+            comment = document.getElementById("user_comment").value;
+            console.log("Comment: " + comment)
+
+            
+            var json = {
+                "route":jsonRoutes,
+                "user_id": user_id,
+                "app_type": app_type,
+                "tariff": tariff,
+                "comment":comment
+
+             }
+            console.log(json)
+
+            $.ajax({
+                url: base_url+"/order",
+                type: "post",
+                data: JSON.stringify(json),
+                dataType: 'json',
+                async: true,
+                processData: false,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                beforeSend: function () {
+                    show_element(document.getElementById('search-progress2'));
+                    hide_element(document.getElementById('price_list_container'));
+                    hide_element(document.getElementById('search_econom_header'));
+
+                },
+                complete: function () {
+                    hide_element(document.getElementById('search-progress2'));
+                    window.location.href = config.redirect;
+                    console.log("Finish")
+                }
+            });
+
+            return false;
+        });
+        
+
+        $(document).on('click', '.submit_wrapper', function () {
+
+
+
+    
+
+
+            $('#spinner1').display = 'none';   
+            let searchParams = new URLSearchParams(window.location.search);
+            var user_id = searchParams.has('user_id') ? searchParams.get('user_id') : null
+            if (user_id == null){
+                user_id =  getCookie('user_id_cookie');
+            }
+            let data = new FormData();
+            data.append('user_id',user_id);
+
+            var jsonRoutes = []
+
+            $('.input-wrapper:not(.clone-input-item)').each(function (i, item) {
+                let key = parseInt($(item).find('input').data('key'));
+
+                data.append('route[' + i + '][short_text]', dataValues[key].name);
+                data.append('route[' + i + '][fullname]', dataValues[key].desc);
+                data.append('route[' + i + '][geo_point][]', dataValues[key].lat);
+                data.append('route[' + i + '][geo_point][]', dataValues[key].lon);
+                data.append('route[' + i + '][type]', dataValues[key].type);
+                data.append('route[' + i + '][city]', 'Караганда');
+
+
+
+                jsonRoutes.push({
+                                short_text:  dataValues[key].name,
+                                fullname:  dataValues[key].name,
+                                geo_point:[dataValues[key].lat,dataValues[key].lon],
+                                type:  dataValues[key].type,
+                                city:  'Караганда',
+
+                            });
+            });
+
+            ''
+    
+       
+         
+
+            var json = {
+                "route":jsonRoutes,
+                "user_id": user_id
+             }
+            console.log(json)
+
+
+            
+
+            currentRequest = $.ajax({
+                
+                // url: "165.22.13.172:8000/order/estimate",
+                url: base_url + "/order/estimate",
+                type: "post",
+                data: JSON.stringify(json),
+                dataType: 'json',
+                async: true,
+                processData: false,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                beforeSend: function () {
+                    show_element(document.getElementById('search-progress'));
+                    hide_element(document.getElementById('price_calc_btn'));
+
+                    if (currentRequest != null) {
+                        currentRequest.abort();
+                    }
+                }
+            })
+                .done(function (data) {
+
+                    baursak_prices = data["baursak"]
+                    region_prices = data["region"]
+                    yandex_prices = data["yandex"]
+
+                    if(baursak_prices != null){
+                        if(baursak_prices.length>2){
+                            baursak_econom = baursak_prices[0]['price']
+                            baursak_comfort = baursak_prices[1]['price']
+                            document.getElementById("btn_econom_baursak").textContent=baursak_econom;
+                        }
+                    }
+
+                    if(region_prices != null){
+                        if(region_prices.length>1){
+                            region_econom = region_prices[1]['price']
+                            region_comfort = region_prices[0]['price']
+                            document.getElementById("btn_econom_region").textContent=region_econom;
+                        }
+                    }        
+                    if(yandex_prices != null){        
+                        if(yandex_prices.length>1){
+                            yandex_econom = yandex_prices[0]['price']
+                            yandex_comfort = yandex_prices[1]['price']
+                            document.getElementById("btn_econom_yandex").textContent=yandex_econom;
+                        }
+                    }    
+                    // console.log("Result success ", baursak_prices.length)
+                    hide_element(document.getElementById('search-progress'));
+                    show_element(document.getElementById('price_calc_btn'));
+                    show_element(document.getElementById('price_list_container'));
+                    show_element(document.getElementById('search_econom_header'));
+                    // hide_element(document.getElementById('price_calc_container'));
+
+                    
+                    
+                });
+
+          
+
+            return false;
+        });
+
+        function sortableEnable() {
+            if (sortableOn) {
+                $('.input-wrapper:not(.clone-input-item)').not(':first').addClass('sortable');
+                return;
+            }
+
+            let inputCount = $('.input-wrapper:not(.clone-input-item)').length;
+            if (inputCount > 2) {
+                $('.input-wrapper:not(.clone-input-item)').not(':first').addClass('sortable');
+                $routeWrapper.find('.sortable-list').sortable({
+                    itemSelector: '.input-wrapper.sortable',
+                    axis: 'y',
+                    sort: function () {
+                        clearTimeout(timeout);
+                        $('.autocomplete-items').addClass('d-none');
+                    }
+                });
+                sortableOn = true;
+            }
+        }
+    });
+
+
+
+ 
+
+    if (x) {
+        console.log(x)
+    }
+</script>
+</body>
+</html>

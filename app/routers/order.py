@@ -45,9 +45,9 @@ def create_yandex_order(db,order_id,routes,client_phone_number):
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_order(order: schemas.OrderCreate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
 
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
+    # response.headers['Access-Control-Allow-Origin'] = '*'
+    # response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+    # response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
     # response.headers['Access-Control-Allow-Origin'] = 'http://165.22.13.172'
 
     # create new order
