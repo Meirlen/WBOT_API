@@ -11,7 +11,7 @@ def update_yandex_token(new_token):
     json_data = {
                 "token": new_token
                 }
-    response = requests.post('0.0.0.0:8000/webhook/yandex_token_update',json=json_data)
+    response = requests.post('http://0.0.0.0:8000/webhook/yandex_token_update',json=json_data)
 
     print(response.status_code)
 
