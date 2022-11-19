@@ -7,9 +7,8 @@ from sqlalchemy import func
 from .. import models, schemas as schemas
 from ..database import get_db
 
-from ..wati_msg_builder import *
+from app.wati_msg_builder import *
 from yandex.calc_price import *
-from yandex.abc import send_driver_assigned_info_to_whatsapp
 from baursak.calc_b_price import *
 from region.calc_region_price import *
 from yandex.create_order import *
@@ -240,7 +239,7 @@ async def get_driver_location(request: schemas.DriverLocation,db: Session = Depe
 
 # Require no auto taxi like Region,Baursak
 @router.post("/send_driver_assigned_info", status_code=status.HTTP_200_OK)
-async def send_driver_assigned_info(driver_info_params: schemas.OrderDriverInfo,db: Session = Depends(get_db)):
+async def send_driver_info(driver_info_params: schemas.OrderDriverInfo,db: Session = Depends(get_db)):
    
     driver_info = DriverInfo(   
                                 full_name = driver_info_params.driver_name,
@@ -265,9 +264,9 @@ async def send_driver_assigned_info(driver_info_params: schemas.OrderDriverInfo,
 
 
 
-    send_driver_assigned_info_to_whatsapp(user.id,driver_info,status)
-    # get last order by ORDER DESC
-    # change order status to Assigned 
+    send_driver_assigned_info(driver_info_params.user_phone,driver_info)
+
+
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
     order_query.update({"status":status}, synchronize_session=False)    
     db.commit()

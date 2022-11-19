@@ -39,9 +39,9 @@ class OrderStatus(BaseModel):
     status: str
 
 class OrderDriverInfo(BaseModel):
-    driver_name = str
+    driver_name:str
     car_info:str
-    price =str
+    price:str
     status: str
     user_phone:str
 
