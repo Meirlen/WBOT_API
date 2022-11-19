@@ -5,16 +5,15 @@ import json
 
 
 def update_yandex_token(new_token):
-    print(new_token)
 
     
 
-    # json_data = {
-    #             "token": new_token
-    #             }
-    # response = requests.post('https://02qyk.localtonet.com/webhook/yandex_token_update',json=json_data)
+    json_data = {
+                "token": new_token
+                }
+    response = requests.post('0.0.0.0:8000/webhook/yandex_token_update',json=json_data)
 
-    # print(response.status_code)
+    print(response.status_code)
 
 
 def get_new_token():
