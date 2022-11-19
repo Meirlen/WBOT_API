@@ -81,7 +81,8 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # git rm -r --cached .
 # git add .
 
-
+docker ps
+docker container inspect
 
 cd WBOT_API
 git fetch
