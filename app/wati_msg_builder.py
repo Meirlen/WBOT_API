@@ -6,7 +6,7 @@ import time
 
 def send_greet_message(phone_number,name,user_id):
     msg = '💁 Привет <b>'+str(name)+'!</b> ✋\n\n'
-    msg += 'Вас приветствует Алем Бот!\n🚕 .'
+    msg += 'Вас приветствует Такси Бот!\n🚕 .'
     # time.sleep(5) 
     send_message(phone_number,msg)
     send_template_ask_fill_address(phone_number,user_id)
