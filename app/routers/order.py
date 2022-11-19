@@ -240,17 +240,17 @@ async def get_driver_location(request: schemas.DriverLocation,db: Session = Depe
 
 # Require no auto taxi like Region,Baursak
 @router.post("/send_driver_assigned_info", status_code=status.HTTP_200_OK)
-async def send_driver_assigned_info(driver_info: schemas.OrderDriverInfo,db: Session = Depends(get_db)):
+async def send_driver_assigned_info(driver_info_params: schemas.OrderDriverInfo,db: Session = Depends(get_db)):
    
     driver_info = DriverInfo(   
-                                full_name = driver_info.driver_name,
-                                car_info=driver_info.car_info,
-                                phone_num=driver_info.user_phone,
-                                final_cost=driver_info.price
+                                full_name = driver_info_params.driver_name,
+                                car_info=driver_info_params.car_info,
+                                phone_num=driver_info_params.user_phone,
+                                final_cost=driver_info_params.price
                             )
 
 
-    status = driver_info.status
+    status = driver_info_params.status
 
     if status == "assigned":
        driver_info.title = "💁 *- К вам выехала машина.*\n\n*"
@@ -258,7 +258,7 @@ async def send_driver_assigned_info(driver_info: schemas.OrderDriverInfo,db: Ses
     if status == "arrived":
        driver_info.title = "💁 *- Вас ожидает такси.*\n\n*"    
 
-    user = db.query(models.User).filter(models.User.phone_number == driver_info.user_phone).first()  
+    user = db.query(models.User).filter(models.User.phone_number == driver_info_params.user_phone).first()  
     order = db.query(models.Order).filter(models.Order.user_id == user.id).order_by(models.Order.order_id.desc()).first()
     order_id = order.order_id
 
