@@ -9,6 +9,7 @@ from ..database import get_db
 
 from ..wati_msg_builder import *
 from yandex.calc_price import *
+from yandex.abc import send_driver_assigned_info_to_whatsapp
 from baursak.calc_b_price import *
 from region.calc_region_price import *
 from yandex.create_order import *
@@ -233,3 +234,43 @@ async def get_driver_location(request: schemas.DriverLocation,db: Session = Depe
             "lat":order.d_lat,
             "lng":order.d_lng
     }
+
+
+
+
+# Require no auto taxi like Region,Baursak
+@router.post("/send_driver_assigned_info", status_code=status.HTTP_200_OK)
+async def send_driver_assigned_info(driver_info: schemas.OrderDriverInfo,db: Session = Depends(get_db)):
+   
+    driver_info = DriverInfo(   
+                                full_name = driver_info.driver_name,
+                                car_info=driver_info.car_info,
+                                phone_num=driver_info.user_phone,
+                                final_cost=driver_info.price
+                            )
+
+
+    status = driver_info.status
+
+    if status == "assigned":
+       driver_info.title = "💁 *- К вам выехала машина.*\n\n*"
+
+    if status == "arrived":
+       driver_info.title = "💁 *- Вас ожидает такси.*\n\n*"    
+
+    user = db.query(models.User).filter(models.User.phone_number == driver_info.user_phone).first()  
+    order = db.query(models.Order).filter(models.Order.user_id == user.id).order_by(models.Order.order_id.desc()).first()
+    order_id = order.order_id
+
+
+
+
+    send_driver_assigned_info_to_whatsapp(user.id,driver_info,status)
+    # get last order by ORDER DESC
+    # change order status to Assigned 
+    order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
+    order_query.update({"status":status}, synchronize_session=False)    
+    db.commit()
+
+
+    return {"order_id": order_id, "status": status}
