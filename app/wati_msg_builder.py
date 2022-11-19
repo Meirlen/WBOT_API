@@ -15,7 +15,7 @@ def send_greet_message(phone_number,name,user_id):
 def send_template_ask_fill_address(phone_number,user_id):
     rows = []
     rows.append(TemplateRow("1","?user_id="+str(user_id)))
-    request_body = TemplateRequestBody('ask_fill_address_3','ask_fill_address_3',rows)
+    request_body = TemplateRequestBody('find_car','find_car',rows)
     send_template(phone_number,request_body)
 
 
@@ -131,6 +131,8 @@ def send_order_completed_message(phone_number,user_id):
 #     rows.append(Button("⭕ Отмена"))
 #     request_body = ButtonsRequestBody(header, body,footer,rows)
 #     send_message_with_buttons(phone_number,request_body)
+
+
 
 
 

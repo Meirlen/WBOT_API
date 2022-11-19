@@ -38,6 +38,10 @@ class OrderStatus(BaseModel):
     order_id: int
     status: str
 
+
+class DriverLocation(BaseModel):
+    order_id: int
+
 class Login(BaseModel):
     phone_number: str
 

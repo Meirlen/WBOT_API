@@ -167,7 +167,11 @@ def update_order_status(yandex_order_id,new_status):
     order_query.update({"status":new_status}, synchronize_session=False)    
     db.commit()
 
-
+def update_order_driver_lat_lng(yandex_order_id,lat,lng):
+    db = next(get_db())
+    order_query = db.query(models.Order).filter(models.Order.yandex_order_id == yandex_order_id)
+    order_query.update({"d_lat":lat,"d_lng":lng}, synchronize_session=False)    
+    db.commit()
 
 def send_driver_assigned_info_to_whatsapp(user_id,driver_info:DriverInfo,status):
     db = next(get_db())
@@ -223,11 +227,22 @@ def handle_driver_object(response,order_info):
                 driver_info = DriverInfo(full_name = driver_name,car_info=car_info,phone_num=phone_num,final_cost=price)
                 # send message to client
                 if status == "driving":
+                    driver_lat = driver['car'][1]
+                    driver_lng = driver['car'][0]
+
+
+                    print("DRIVER Coordinates", driver_lat)
+
+                    # update driver position
+                    update_order_driver_lat_lng(order_info.yandex_order_id,driver_lat,driver_lng)
+
+
                     if order_info.status != "assigned":
                         # update_order_status(order_info.yandex_order_id,"assigned")
                         driver_info.title = "💁 *- К вам выехала машина.*\n\n*"
                         send_driver_assigned_info_to_whatsapp(order_info.user_id,driver_info,"assigned")
                 if status == "waiting":
+         
                     # update_order_status(order_info.yandex_order_id,"driver_wait")
                     driver_info.title = "💁 *- Водитель подьехал. Вас ожидает:*\n\n*"
                     send_driver_assigned_info_to_whatsapp(order_info.user_id,driver_info,"arrived")

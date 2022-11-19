@@ -137,6 +137,8 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
             for address in to_address_array:
                 to_address = to_address + " "+ address.short_text + ", "
 
+        print("USER PHONE NUMBER: ", user.phone_number)        
+
         send_order_info(
                         user.phone_number,
                         from_address,
@@ -216,3 +218,18 @@ async def update_status(order: schemas.OrderStatus,db: Session = Depends(get_db)
 
 
     return {"order_id": order.order_id, "status": order.status}
+
+
+@router.post("/driver_location", status_code=status.HTTP_200_OK)
+async def get_driver_location(request: schemas.DriverLocation,db: Session = Depends(get_db)):
+   
+    
+    # get last order by ORDER DESC
+    # change order status to Assigned 
+    order = db.query(models.Order).filter(models.Order.order_id == request.order_id).first()
+
+
+    return  {
+            "lat":order.d_lat,
+            "lng":order.d_lng
+    }

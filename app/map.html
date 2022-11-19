@@ -47,10 +47,14 @@
 <script>
 
 
+    var userLat = 49.866690304824054
+    var userLng =  73.18854500268499
+
+
     
 
     // Map initialization 
-    var map = L.map('map').setView([49.854244541285816, 73.19037123640531], 11);
+    var map = L.map('map').setView([userLat, userLng], 16);
 
     //osm layer
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -60,77 +64,138 @@
 
  
    setInterval(() => {
-      var encoded = "{qhoHa|u}LXqEut@_Lqj@sMwBv`@i@dCaAP{Y}F~@oO";
-      var coordinates = decode(encoded)
-      var polylinePoints = coordinates
 
-      var latlngs = []
+      getDriverLocations()
+    //   getRoute2Points()
 
-      for (let i = 0; i < coordinates.length; i++) {
-           latlngs.push([coordinates[i].latitude, coordinates[i].longitude])
 
-      }
-      console.log(latlngs)
 
-      // var latlngs_old = [
-      // [45.51, -122.68],
-      // [37.77, -122.43],
-      // [34.04, -118.2]
-      // ];
-      var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
-      // var polyline = L.polyline(polylinePoints).addTo(map);
+   }, 5000);
 
-   }, 5000000);
+    var markerDriver, circle,markerUser;
 
-    var marker, circle;
 
-    function getPosition(lat,long){
-        // console.log(position)
-        var lat = position.coords.latitude
-        var long = position.coords.longitude
-        var accuracy = position.coords.accuracy
 
-        if(marker) {
-            map.removeLayer(marker)
+    function addMarkers(lat,long){
+     
+
+        if(markerDriver) {
+            map.removeLayer(markerDriver)
+
         }
+        if(markerUser) {
+            map.removeLayer(markerUser)
 
+        }
         if(circle) {
             map.removeLayer(circle)
         }
 
-        marker = L.marker([lat, long])
-        circle = L.circle([lat, long], {radius: accuracy})
+        var greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
 
-        var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+        markerDriver = L.marker([lat, long],{icon: greenIcon})
+        markerUser = L.marker([userLat,userLng])
+
+
+        var featureGroup = L.featureGroup([markerDriver,markerUser]).addTo(map)
 
         map.fitBounds(featureGroup.getBounds())
 
-        console.log("Your coordinate is: Lat: "+ lat +" Long: "+ long+ " Accuracy: "+ accuracy)
+        console.log("Your coordinate is: Lat: "+ lat +" Long: "+ long)
     }
 
     let currentRequest = null;
 
+    var polylines = [];
+
+    function showRoute(encoded){
+
+        polylines.forEach(function (item) {
+            map.removeLayer(item)
+        });
+        var coordinates = decode(encoded)
+        var polylinePoints = coordinates
+
+        var latlngs = []
+
+        for (let i = 0; i < coordinates.length; i++) {
+            latlngs.push([coordinates[i].latitude, coordinates[i].longitude])
+
+        }
+        console.log(latlngs)
+        var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+        polylines.push(polyline);
+
+    }
+
     // Get driver current locations by api
     
-    function getLocations(){
-      var decode = google.maps.geometry.encoding.decodePath("oyky@e}|kGpv@kzE");
-      // currentRequest = $.ajax({
-      //          url: "http://165.22.13.172:8078/?user_id=1",
-      //          beforeSend: function () {
-      //             if (currentRequest != null) {
-      //                   currentRequest.abort();
-      //             }
-      //          }
-      //       })
-      //          .done(function (data) {
-         
-      //          });
+    function getDriverLocations(){
+
+
+        var json = {
+                "order_id": 10,
+                }
+        currentRequest = $.ajax({
+                url: "http://127.0.0.1:8000/order/driver_location",
+                type: "post",
+                data: JSON.stringify(json),
+                dataType: 'json',
+                async: true,
+                processData: false,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                beforeSend: function () {
+                    if (currentRequest != null) {
+                            currentRequest.abort();
+                    }
+                }
+                })
+                .done(function (data) {
+                    // data = JSON.parse(data);
+                    console.log(data['lat'])
+                    var lat  = data['lat']
+                    var lng  = data['lng']
+
+                    addMarkers(lat,lng)
+                    getRoute2Points(lat,lng)
+            
+                });
 
     }
 
 
 
 
+    function getRoute2Points(driverLat,driverLng){
+        var json = {
+                "order_id": 1,
+                }
+        currentRequest = $.ajax({
+                url: "http://router.project-osrm.org/route/v1/driving/"+userLng+","+userLat+";"+driverLng+","+driverLat+"?alternatives=true&geometries=polyline",
+                beforeSend: function () {
+                    if (currentRequest != null) {
+                            currentRequest.abort();
+                    }
+                }
+                })
+                .done(function (data) {
+                    // data = JSON.parse(data);
+                    var encodedRoute = data['routes'][0]['geometry']
+                    showRoute(encodedRoute)
+                    console.log(encodedRoute)
+                });
+
+        }
     function decode(encoded){
 
             // array that holds the points

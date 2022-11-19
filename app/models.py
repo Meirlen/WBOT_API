@@ -32,6 +32,10 @@ class Order(Base):
     # c - Comfort
     # e - Econom
 
+    # Driver location
+    d_lat = Column(Float)
+    d_lng = Column(Float)
+
 
 
 class Credentials(Base):
