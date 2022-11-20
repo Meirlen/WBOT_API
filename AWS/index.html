@@ -43,6 +43,8 @@
             background-repeat: no-repeat;
             background-position: 30% 50%;
             margin-top: -8px;
+            padding-bottom: 8px;
+
         }
         .form_wrapper {
             width: 90%;
@@ -419,10 +421,10 @@
             display: none;
 
         }
-        /* .search_car_container {
+        .search_car_container {
             display: none;
 
-        } */
+        }
         
         .price_wrapper {
             width: 100%;
@@ -652,7 +654,7 @@
     </form>
 </div>
 
-<div class="comment_wrapper">
+<div class="comment_wrapper" id="comment_block">
     <div class="input-wrapper-comment">
     
             <input id="user_comment" type="text" class="comment" placeholder="Комментарий водителю..." data-key="0" value="">
@@ -1225,6 +1227,9 @@
                     hide_element(document.getElementById('search-progress2'));
                     // window.location.href = config.redirect;
                     show_element(document.getElementById('search-progress-car'));
+                    hide_element(document.getElementById('price_calc_container'));
+                    hide_element(document.getElementById('comment_block'));
+
                     console.log("Finish")
                 });
 
@@ -1376,7 +1381,7 @@
                 var json = {
                     "user_id": parseInt(user_id),
                     "text": "⭕ Отмена",
-                    "q":"/webhook/message/"
+                    "q":"/webhook/message"
                 }
                 console.log(json)
 
@@ -1406,6 +1411,8 @@
                 })
                     .done(function (data) {
                         console.log("Ваш заказ отменен!")
+                        window.location.reload();
+                        // hide_element(price_calc_container)
 
                     });
 

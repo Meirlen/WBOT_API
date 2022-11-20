@@ -89,6 +89,7 @@ git fetch
 git pull
 docker-compose up --force-recreate --build -d
 
+                        hide_element(document.getElementById('price_calc_container'));
 
 
 # Добрый день, так как продукт новый были перебои на стороне сервера, сейчас бот работает в сатбильном режиме.Приносим извинения за доставленные неудобства.

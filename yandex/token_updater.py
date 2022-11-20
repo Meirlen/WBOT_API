@@ -2,16 +2,22 @@ import requests
 from yandex.json_data import *
 from yandex.yandex_config import * 
 import json
+from app.database import get_db_singleton
+from app import models, schemas as schemas
 
 
 def update_yandex_token(new_token):
 
-    json_data = {
-                "token": new_token
-                }
-    response = requests.post('http://165.22.13.172:8000/webhook/yandex_token_update',json=json_data)
 
-    print(response.status_code)
+    os.environ["CSRF_TOKEN"] = new_token
+    db = get_db_singleton()
+    cred = db.query(models.Credentials).filter(models.Credentials.name == "csrf_token")
+    cred.update({"value":str(new_token)}, synchronize_session=False)    
+    db.commit()
+    db.close()
+
+
+    print("Db Token updated ")
 
 
 def get_new_token():
