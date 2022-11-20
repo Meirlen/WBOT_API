@@ -83,6 +83,7 @@ class TokenData(BaseModel):
 
 
 class WhatsappMessage(BaseModel):
-    waId: str
-    senderName: str   
+    waId: Optional[str] = None 
+    senderName: Optional[str] = None 
     text:str 
+    user_id: Optional[int] = None

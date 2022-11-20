@@ -24,11 +24,14 @@ from sqlalchemy import and_, or_, not_
 async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks: BackgroundTasks, db: Session = Depends(get_db),):
 
     print(input_message)
+    user_id = input_message.user_id
+    if user_id != None:
+         user = db.query(models.User).filter(models.User.id == user_id).first()
+         input_message.waId = user.phone_number
+         input_message.senderName= user.user_name
+    else:
+         input_message.waId =  "7"+input_message.waId[1:]
 
-    # # hash the password - user.password
-    # hashed_password = utils.hash(user.password)
-    # user.password = hashed_password
-    input_message.waId =  "7"+input_message.waId[1:]
     user_message = input_message.text
     phone_number = input_message.waId
     user_name = input_message.senderName

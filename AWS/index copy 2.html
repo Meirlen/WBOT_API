@@ -415,15 +415,14 @@
             display: none;
 
         }
-        .section-search_progress_2 {
+        .section_car_container {
             display: none;
 
         }
-        /* .search_car_container {
+        .searc {
             display: none;
 
-        } */
-        
+        }
         .price_wrapper {
             width: 100%;
             background: #fff;
@@ -444,19 +443,7 @@
             line-height: 1.45;
             font-size: 16px;
             display: none;
-        }
-        .section-no_auth {
-            width: 100%;
-            color: #a1a1aa;
-            font-weight: 600;
-            margin-top: 32px;
-            font-family: Arial,Helvetica,sans-serif;
-            letter-spacing: 0.018em;
-            line-height: 1.45;
-            font-size: 16px;
-            text-align: center;
-            padding: 6px;            
-            display: none;
+
         }
         input[type="submit"] {
             border-radius: 16px;
@@ -469,37 +456,9 @@
             font-size: 16px;
             transition: .15s linear;
         }
-        .price_btns {
-            border-radius: 16px;
-            background: #fce000;
-            font-weight: 700;
-            border: none;
-            color: #000;
-            width: 40%;
-            line-height: 32px;
-            font-size: 16px;
-            transition: .15s linear;
-        }
-        .cancel_btns {
+        input[type="cancel"] {
             border-radius: 16px;
             background: #901c27;
-            font-weight: 700;
-            border: none;
-            color: #fff;
-            width: 50%;
-            line-height: 32px;
-            font-size: 16px;
-            transition: .15s linear;
-            text-align: center !important;
-            margin: 0 auto;
-            display: block;
-            margin-top: 50px;
-
-        }
-
-        input[type="registr"] {
-            border-radius: 16px;
-            background: #39a938;
             font-weight: 700;
             border: none;
             color: #fff;
@@ -510,6 +469,17 @@
             display: block;
             margin: 0 auto;
             margin-top: 20px;
+        }
+        .price_btns {
+            border-radius: 16px;
+            background: #fce000;
+            font-weight: 700;
+            border: none;
+            color: #000;
+            width: 40%;
+            line-height: 32px;
+            font-size: 16px;
+            transition: .15s linear;
         }
         input[type="submit"]:hover {
             background: #39a938;
@@ -679,10 +649,6 @@
     </div>
 </div>
 
-
-  
-
-
 </div> 
 
 <div class="section-search_progress_2" id="search-progress2">
@@ -691,25 +657,19 @@
       </button>
 </div>
 
-<div class="search_car_container" id="search-progress-car">
-    <button class="buttonload" id="spinner2">
-        <i class="fa fa-spinner fa-spin"></i> Идет поиск машины.... На указанный вами ватсап номер придет сообщение с номером автомобиля
+<div class="search_car_container">
+    <button class="buttonload" id="spinner1">
+        <i class="fa fa-spinner fa-spin"></i> Идет поиск машины.... Ожидайте сообщения с номером автомобиля
       </button>
 
-      <!-- <button type="cancel" id="cancel_btn" value="Отменить заказ" > -->
-        <!-- id="btn_econom_region"  class="price_btns"  -->
-      <button id="btn_cancel" class="cancel_btns"  onClick="reply_click(this.id)">Отменить заказ</button>
+      <input type="cancel" id="cancel_btn" value="Отменить заказ" >
 
 </div>
+no_auth_state
+search_econom_header
 <div class="search_result_container">  
     
 
-    <div class="section-no_auth" id = "no_auth_state">
-        Для вызова такси вам нужно зарегистрироваться через ватсап номер
-        <input type="registr" id="reg_btn" value="Зарегистрироваться"   >
-
-    
-    </div>
 
     <div class="section-search_header" id = "search_econom_header">Эконом (Для заказа нужного такси просто кликните на название такси)</div>
 
@@ -797,7 +757,6 @@
 
     function reply_click(clicked_id)
     {
-        console.log(clicked_id)
 
     }
 
@@ -1136,8 +1095,7 @@
             }
 
             if (user_id == null){
-                console.log("Вам нужно зарегистрироваться через ватсап")
-               return
+               window.location.href = "https://wa.me/77711474209?text=/start";
             }   
          
 
@@ -1223,19 +1181,13 @@
             })
                 .done(function (data) {
                     hide_element(document.getElementById('search-progress2'));
-                    // window.location.href = config.redirect;
-                    show_element(document.getElementById('search-progress-car'));
+                    window.location.href = config.redirect;
                     console.log("Finish")
                 });
 
             return false;
         });
         
-        $(document).on('click', '.section-no_auth', function () {
-
-            
-            window.location.href = "https://wa.me/77711474209?text=/start";
-        });
 
         $(document).on('click', '.submit_wrapper', function () {
 
@@ -1346,12 +1298,7 @@
                     hide_element(document.getElementById('search-progress'));
                     show_element(document.getElementById('price_calc_btn'));
                     show_element(document.getElementById('price_list_container'));
-                    if(user_id == null){
-                        show_element(document.getElementById('no_auth_state'));
-                    }
-                    else{
-                        show_element(document.getElementById('search_econom_header'));
-                    }
+                    show_element(document.getElementById('search_econom_header'));
                     // hide_element(document.getElementById('price_calc_container'));
 
                     
@@ -1362,52 +1309,6 @@
 
             return false;
         });
-
-
-        // CANCEL ORDER
-        $(document).on('click', '.search_car_container', function () {
-
-
-                var json = {
-                    "user_id": user_id,
-                    "text": "⭕ Отмена",
-                    "q":"/webhook/message/"
-                }
-                console.log(json)
-
-
-
-
-                currentRequest = $.ajax({
-                    
-                    url: base_url,
-                    type: "post",
-                    data: JSON.stringify(json),
-                    dataType: 'json',
-                    async: true,
-                    processData: false,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Cache-Control': 'no-cache'
-                    },
-                    beforeSend: function () {
-                        show_element(document.getElementById('search-progress'));
-                        hide_element(document.getElementById('price_calc_btn'));
-
-                        if (currentRequest != null) {
-                            currentRequest.abort();
-                        }
-                    }
-                })
-                    .done(function (data) {
-                        console.log("Ваш заказ отменен!")
-
-                    });
-
-
-
-                return false;
-                });
 
         function sortableEnable() {
             if (sortableOn) {
