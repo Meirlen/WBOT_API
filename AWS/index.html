@@ -496,23 +496,23 @@
             margin: 0 auto;
             display: block;
             margin-top: 50px;
-
         }
-
-        input[type="registr"] {
+        .reg_btns {
             border-radius: 16px;
             background: #39a938;
             font-weight: 700;
             border: none;
             color: #fff;
             width: 50%;
-            line-height: 36px;
+            line-height: 32px;
             font-size: 16px;
+            transition: .15s linear;
             text-align: center !important;
-            display: block;
             margin: 0 auto;
-            margin-top: 20px;
+            display: block;
+            margin-top: 10px;
         }
+
         input[type="submit"]:hover {
             background: #39a938;
         }
@@ -708,8 +708,7 @@
 
     <div class="section-no_auth" id = "no_auth_state">
         Для вызова такси вам нужно зарегистрироваться через ватсап номер
-        <input type="registr" id="reg_btn" value="Зарегистрироваться"   >
-
+        <button id="reg_btn" class="reg_btns"  onClick="reply_click(this.id)">Зарегистрироваться</button>
     
     </div>
 
@@ -1358,6 +1357,8 @@
                         show_element(document.getElementById('search_econom_header'));
                     }
                     // hide_element(document.getElementById('price_calc_container'));
+                    
+                    document.getElementById("price_list_container").scrollIntoView()
 
                     
                     

@@ -5,13 +5,13 @@ from yandex.yandex_config import *
 
 from yandex.data_models import *
 
-from app.database import get_db
+from app.database import get_db_singleton
 from app import models, schemas as schemas
 from app.wati_msg_builder import *
 
 
 def get_saved_last_token():
-     db = get_db()
+     db = get_db_singleton()
      csrf_token = next(db).query(models.Credentials).filter(models.Credentials.name == "csrf_token").first()
      return csrf_token.value      
 
@@ -26,10 +26,10 @@ def get_price_by_route(routes):
     # set csrf token
     x_csrf_token = os.getenv("CSRF_TOKEN",None)
 
-    if x_csrf_token == None:
-        x_csrf_token = get_saved_last_token()
-        os.environ["CSRF_TOKEN"] = x_csrf_token
-        print("Token from db: ", x_csrf_token )
+    # if x_csrf_token == None:
+    x_csrf_token = get_saved_last_token()
+    os.environ["CSRF_TOKEN"] = x_csrf_token
+    print("Token from db: ", x_csrf_token )
 
     headers['x-csrf-token'] =  x_csrf_token
 

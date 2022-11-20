@@ -27,6 +27,9 @@ from yandex.yandex_config import *
 #                 "city": "Караганда",
 #                 }
 #             ]
+
+from yandex.calc_price import get_saved_last_token
+
 def send_order_to_yandex(routes,client_phone_number):
     print(send_order_to_yandex)
 
@@ -59,6 +62,8 @@ def send_order_to_yandex(routes,client_phone_number):
 
     # set csrf token
     x_csrf_token = os.getenv("CSRF_TOKEN",None)
+    x_csrf_token = get_saved_last_token()
+
     headers['x-csrf-token'] =  x_csrf_token
 
     response = requests.post('https://ya-authproxy.taxi.yandex.ru/external/3.0/orderdraft', cookies=cookies, headers=headers,

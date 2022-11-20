@@ -98,12 +98,12 @@ async def get_order(session, order_info:OrderInfo):
 
 
     # set csrf token
-    x_csrf_token = os.getenv("CSRF_TOKEN",None)
+    # x_csrf_token = os.getenv("CSRF_TOKEN",None)
 
-    if x_csrf_token == None:
-        x_csrf_token = get_saved_last_token()
-        os.environ["CSRF_TOKEN"] = x_csrf_token
-        print("Token from db: ", x_csrf_token )
+    # if x_csrf_token == None:
+    x_csrf_token = get_saved_last_token()
+    os.environ["CSRF_TOKEN"] = x_csrf_token
+    print("Token from db: ", x_csrf_token )
 
     headers['x-csrf-token'] =  x_csrf_token
 
