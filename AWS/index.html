@@ -1367,9 +1367,14 @@
         // CANCEL ORDER
         $(document).on('click', '.search_car_container', function () {
 
+                let searchParams = new URLSearchParams(window.location.search);
+                var user_id = searchParams.has('user_id') ? searchParams.get('user_id') : null
+                if (user_id == null){
+                    user_id =  getCookie('user_id_cookie');
+                }
 
                 var json = {
-                    "user_id": user_id,
+                    "user_id": parseInt(user_id),
                     "text": "⭕ Отмена",
                     "q":"/webhook/message/"
                 }
