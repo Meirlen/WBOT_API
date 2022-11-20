@@ -363,7 +363,8 @@ def send_template(whatsapp_number,body:TemplateRequestBody):
 
     # convert data class to json
     body = json.dumps(dataclasses.asdict(body)) # '{"x": "1"}'
-    whatsapp_number = whatsapp_number.replace('7','8',1) # wati phone format difference between to send_message and send_template
+    
+    whatsapp_number = "8"+whatsapp_number[1:] # wati phone format difference between to send_message and send_template
 
     token = WHATSAPP_API_TOKEN
     url = WHATSAPP_WEBHOOK_URL
