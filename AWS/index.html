@@ -453,6 +453,17 @@
             font-size: 16px;
             transition: .15s linear;
         }
+        input[type="cancel"] {
+            border-radius: 16px;
+            background: #901c27;
+            font-weight: 700;
+            border: none;
+            color: #fff;
+            width: 50%;
+            line-height: 36px;
+            font-size: 16px;
+            text-align: center !important;
+        }
         .price_btns {
             border-radius: 16px;
             background: #fce000;
@@ -643,11 +654,22 @@
         <i class="fa fa-spinner fa-spin"></i> Заказываем такси....
       </button>
 </div>
+
+<div class="search_car_container">
+    <button class="buttonload" id="spinner1">
+        <i class="fa fa-spinner fa-spin"></i> Идет поиск машины.... Ожидайте сообщения с номером автомобиля
+      </button>
+
+      <input type="cancel" id="cancel_btn" value="Отменить заказ" >
+
+</div>
+
+
 <div class="search_result_container">  
     
 
 
-    <div class="section-search_header" id = "search_econom_header">Эконом</div>
+    <div class="section-search_header" id = "search_econom_header">Эконом (Для заказа нужного такси просто кликните на название такси)</div>
 
     <div class="price_wrapper" id="price_list_container">
         <div class="section-search_result_item" id="econom_yandex">

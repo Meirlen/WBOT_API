@@ -144,7 +144,7 @@
                 "order_id": 10,
                 }
         currentRequest = $.ajax({
-                url: "http://127.0.0.1:8000/order/driver_location",
+                url: "http://165.22.13.172:8000/order/driver_location",
                 type: "post",
                 data: JSON.stringify(json),
                 dataType: 'json',
@@ -178,7 +178,7 @@
 
     function getRoute2Points(driverLat,driverLng){
         var json = {
-                "order_id": 1,
+                "order_id": 6,
                 }
         currentRequest = $.ajax({
                 url: "http://router.project-osrm.org/route/v1/driving/"+userLng+","+userLat+";"+driverLng+","+driverLat+"?alternatives=true&geometries=polyline",

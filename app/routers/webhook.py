@@ -28,6 +28,7 @@ async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks
     # # hash the password - user.password
     # hashed_password = utils.hash(user.password)
     # user.password = hashed_password
+    input_message.waId =  input_message.waId.replace("8","7",1)
     user_message = input_message.text
     phone_number = input_message.waId
     user_name = input_message.senderName
