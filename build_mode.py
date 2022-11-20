@@ -82,9 +82,13 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # git add .
 
 docker ps
-docker container inspect
+docker container inspect b66fd9b06429
 
 cd WBOT_API
 git fetch
 git pull
 docker-compose up --force-recreate --build -d
+
+
+
+# Добрый день, так как продукт новый были перебои на стороне сервера, сейчас бот работает в сатбильном режиме.Приносим извинения за доставленные неудобства.

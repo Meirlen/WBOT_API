@@ -1069,6 +1069,10 @@
             if (user_id == null){
                 user_id =  getCookie('user_id_cookie');
             }
+
+            if (user_id == null){
+               window.location.href = "https://wa.me/77711474209?text=/start";
+            }   
          
 
             let data = new FormData();

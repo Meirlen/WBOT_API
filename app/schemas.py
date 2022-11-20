@@ -21,7 +21,6 @@ class YandexRoute(BaseModel):
 
 class OrderEstimate(BaseModel):
     route: List[YandexRoute]
-    user_id: int
 
 
 class OrderCreate(BaseModel):
