@@ -21,8 +21,13 @@ from sqlalchemy import and_, or_, not_
     
    
 @router.post("/message", status_code=status.HTTP_200_OK)
-async def whatsapp_input(input_message: schemas.WhatsappMessage,background_tasks: BackgroundTasks, db: Session = Depends(get_db),):
+async def whatsapp_input(input_message: schemas.WhatsappMessage,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db),):
 
+
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
+    
     print(input_message)
     user_id = input_message.user_id
     if user_id != None:
