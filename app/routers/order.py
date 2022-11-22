@@ -273,3 +273,21 @@ async def send_driver_info(driver_info_params: schemas.OrderDriverInfo,db: Sessi
 
 
     return {"order_id": order_id, "status": status}
+
+
+
+
+
+
+
+from yandex.yandex_geo_coder import *
+
+@router.post("/geocode", status_code=status.HTTP_200_OK)
+async def geocode(request: schemas.GeoCodeRequest,db: Session = Depends(get_db)):
+   
+    address = get_address_by_coords(request.lon,request.lat)
+
+
+    return  {
+            "text": address
+    }    

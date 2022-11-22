@@ -1,4 +1,14 @@
 
+
+from yandex.abc import *
+from yandex.calc_price import *
+from yandex.yandex_geo_coder import *
+
+
+
+
+get_address_by_coords()
+
 # import os
 
 # from app.database import get_db
@@ -34,13 +44,13 @@ from baursak.calc_b_price import *
 
 
 # Region price calc
-from region.calc_region_price import *
+# from region.calc_region_price import *
 
 
-routes = [[73.132545, 49.77491], [73.076233, 49.915886]]
+# routes = [[73.132545, 49.77491], [73.076233, 49.915886]]
 
-price_info = get_price_by_route(routes)
-print(price_info)
+# price_info = get_price_by_route(routes)
+# print(price_info)
 
 
 #### PRICE CALCULATOR END

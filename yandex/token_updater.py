@@ -48,6 +48,7 @@ def update_token_by_timer():
     while True :
         print("Yandex token successfully updated")
         new_token = get_new_token()
+        print(new_token)
         update_yandex_token(new_token)
         time.sleep(1800)
 

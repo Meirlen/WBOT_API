@@ -87,3 +87,8 @@ class WhatsappMessage(BaseModel):
     senderName: Optional[str] = None 
     text:str 
     user_id: Optional[int] = None
+
+
+class GeoCodeRequest(BaseModel):
+    lat: float
+    lon:float    

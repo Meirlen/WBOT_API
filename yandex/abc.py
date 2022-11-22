@@ -84,12 +84,7 @@ from app.database import get_db
 from app import models, schemas as schemas
 from app.wati_msg_builder import *
 import os
-
-
-def get_saved_last_token():
-     db = get_db()
-     csrf_token = next(db).query(models.Credentials).filter(models.Credentials.name == "csrf_token").first()
-     return csrf_token.value   
+from yandex.calc_price import get_saved_last_token
 
 
 async def get_order(session, order_info:OrderInfo):

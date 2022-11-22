@@ -51,3 +51,21 @@ create_draft_json_data = {
             "dont_sms": False,
             "driverclientchat_enabled": True
 }
+
+geo_coder_json_data = {
+  "type": "a",
+  "id": "11eb7777c559487e87ebe2728712d034",
+  "state": {
+    "accuracy": 0,
+    "location": [
+      73.19400342718102,
+      49.87035459240982
+    ]
+  },
+  "position": [
+      73.19400342718102,
+      49.87035459240982
+  ],
+  "action": "pin_drop",
+  "sticky": False
+}
