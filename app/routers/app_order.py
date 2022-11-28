@@ -14,6 +14,9 @@ from region.calc_region_price import *
 from yandex.create_order import *
 from admin.telegram_api import *
 
+from app.fb_helper import create_order_in_firebase,change_order_status
+
+
 router = APIRouter(
     prefix="/mobile/order",
     tags=['Orders']
@@ -57,12 +60,32 @@ async def create_order( order: schemas.UserOrderCreate,
     # create new order
     user = current_user
     user_id = current_user.id
-    new_order = models.Order(user_id = user_id,app_type = order.app_type,tariff = order.tariff)
 
-    
+
+    # add to local db
+    new_order = models.Order(user_id = user_id,app_type = order.app_type,tariff = order.tariff)
     db.add(new_order)
     db.commit()
     db.refresh(new_order)
+
+    # add to firebase
+    
+    print("Order created in Postgres")
+
+    fb_routes = []
+    for route in order.route:
+        fb_routes.append(
+            {
+                "short_text":route.short_text,
+                "fullname":route.fullname,
+                "lat":route.geo_point[0],
+                "lng":route.geo_point[1]},
+            )
+    background_tasks.add_task(create_order_in_firebase,
+        new_order.order_id,
+        "1000 тенге",
+        fb_routes)
+
 
 
     order_id = new_order.order_id
