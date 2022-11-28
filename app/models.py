@@ -75,10 +75,20 @@ class User(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     phone_number = Column(String, nullable=False, unique=True)
     user_name = Column(String, nullable=True)
-    role = Column(String, nullable=False,server_default='user') # driver
+
+    role = Column(String, nullable=False,server_default='user') 
+    # wuser = whatsapp
+    # auser = app 
+    # adriver = app driver
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
 
 
-
+class Otp(Base):
+    __tablename__ = "otps"
+    id = Column(Integer, primary_key=True, nullable=False)
+    phone_number = Column(String, nullable=False)
+    code = Column(String, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))      
                 

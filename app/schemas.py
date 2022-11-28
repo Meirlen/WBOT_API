@@ -30,6 +30,12 @@ class OrderCreate(BaseModel):
     tariff:str
     comment:str
 
+class UserOrderCreate(BaseModel):
+    route: List[YandexRoute]
+    app_type:str
+    tariff:str
+    comment:str
+
 class UpdateYToken(BaseModel):
     token:str
      

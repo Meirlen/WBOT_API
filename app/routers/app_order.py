@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from sqlalchemy import func
 # from sqlalchemy.sql.functions import func
-from .. import models, schemas as schemas
+from .. import models, schemas as schemas,oauth2
 from ..database import get_db
 
 from app.wati_msg_builder import *
@@ -15,8 +15,8 @@ from yandex.create_order import *
 from admin.telegram_api import *
 
 router = APIRouter(
-    prefix="/mobile",
-    tags=['Mobile_api']
+    prefix="/mobile/order",
+    tags=['Orders']
 )
 
 
@@ -43,7 +43,11 @@ def create_yandex_order(db,order_id,routes,client_phone_number):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_order(order: schemas.OrderCreate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+async def create_order( order: schemas.UserOrderCreate,
+                        response: Response,
+                        background_tasks: BackgroundTasks,
+                        db: Session = Depends(get_db),
+                        current_user: int = Depends(oauth2.get_current_user)):
 
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
@@ -51,8 +55,9 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
     # response.headers['Access-Control-Allow-Origin'] = 'http://165.22.13.172'
 
     # create new order
-    new_order = models.Order(user_id = order.user_id,app_type = order.app_type,tariff = order.tariff)
-    user = db.query(models.User).filter(models.User.id == order.user_id).first()
+    user = current_user
+    user_id = current_user.id
+    new_order = models.Order(user_id = user_id,app_type = order.app_type,tariff = order.tariff)
 
     
     db.add(new_order)
@@ -82,9 +87,6 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
         db.refresh(new_route)
 
     # calculate orders
-
-
-
 
     app_type = order.app_type
     tariff= order.tariff
@@ -125,7 +127,7 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
             if order.tariff == "c":
                 price = price_info[0]['price']    
     if user:
-        # send to whatsapp user order created message
+        # send to telegram admin user order created message
 
         from_address = order.route[0].short_text
 
@@ -138,45 +140,54 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
                 to_address = to_address + " "+ address.short_text + ", "
 
         print("USER PHONE NUMBER: ", user.phone_number)        
-
-        send_order_info(
-                        user.phone_number,
-                        from_address,
-                        to_address,
-                        aggregator,
-                        tariff,
-                        price,
-                        comment)
-
         address = from_address + "  \n"+ to_address
         send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n '+ aggregator +  " \n "+ str(user.phone_number)+"\n"+address+"\n Комментарий: "+str(comment))               
 
     return {"order_id": order_id, "app_type": app_type}
 
+from datetime import datetime, timezone
 
-    # print("Order created in Postgres")
-    # # background_tasks.add_task(create_order_in_firebase,
-    # #     new_order.order_id,
-    # #     order.from_address,
-    # #     order.to_address,
-    # #     order.price,
-    # #     order.from_lat,
-    # #     order.from_lng,
-    # #     order.to_lat,
-    # #     order.to_lng)
-    # user = db.query(models.User).filter(models.User.id == order.user_id).first()
-    # if user:
-    #    send_price_info(user.phone_number) 
+def calculate_order_created_time_in_minutes(created_at):
+    curr_time = datetime.now(timezone.utc)
+    order_time = created_at
+    difference =  curr_time - order_time
+    duration_in_s = difference.total_seconds()
+    minutes = divmod(duration_in_s, 60)[0]   
+    return minutes
 
+@router.get('/active_order', status_code=status.HTTP_200_OK)
+def get_user_activ_order(db: Session = Depends(get_db),current_user = Depends(oauth2.get_current_user)):
 
+    user = current_user
+    user_id = current_user.id
 
+    # get last order by ORDER DESC
+    order = db.query(models.Order).filter(models.Order.user_id == user_id).order_by(models.Order.order_id.desc()).first() 
+    if not order:
+            print("The user dont't have  any order proccess")
+            return {
+                   "order": None
+                   
+                   }
+    
 
+    after_created_min = calculate_order_created_time_in_minutes(order.created_at)
+    print("Order created ", after_created_min , " min ago")
 
-        
-    return new_order
+    if not order or after_created_min > 120:
+        print("The user dont't have  any order proccess")
+        return {"order": None}
+    else:    
+        routes = db.query(models.Route).filter(models.Route.order_id == order.order_id).all() 
+
+        return {
+                
+                "order":order,
+                "routes":routes
+        }
 
     
-@router.post("/route/estimate", status_code=status.HTTP_201_CREATED)
+@router.post("/estimate", status_code=status.HTTP_201_CREATED)
 async def create_draft(order: schemas.OrderEstimate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     routes = order.route
     route_array = []
@@ -186,12 +197,20 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
 
         route_array.append([lat_point,lon_point])
 
- 
-    yandex_price_info = get_price_by_route(route_array)
+    # if yandex_price_info == None:
+    # yandex_price_info = get_price_by_route(route_array)
+    yandex_price_info =   get_price_by_route(route_array)
+    baursak_price_info = get_price_by_route_baursak(route_array)
+    region_price_info = get_price_by_route_region(route_array)
+
+
+    print(route_array)
 
     
     return  {
-         "price":yandex_price_info,
+         "yandex":yandex_price_info,
+         "baursak": baursak_price_info,
+         "region": region_price_info
 
     }
 
