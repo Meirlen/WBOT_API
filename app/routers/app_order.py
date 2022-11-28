@@ -156,7 +156,7 @@ def calculate_order_created_time_in_minutes(created_at):
     return minutes
 
 @router.get('/active_order', status_code=status.HTTP_200_OK)
-def get_user_activ_order(db: Session = Depends(get_db),current_user = Depends(oauth2.get_current_user)):
+def get_user_last_order_status(db: Session = Depends(get_db),current_user = Depends(oauth2.get_current_user)):
 
     user = current_user
     user_id = current_user.id
@@ -177,14 +177,19 @@ def get_user_activ_order(db: Session = Depends(get_db),current_user = Depends(oa
     if not order or after_created_min > 120:
         print("The user dont't have  any order proccess")
         return {"order": None}
-    else:    
-        routes = db.query(models.Route).filter(models.Route.order_id == order.order_id).all() 
+    else: 
+        order_status =  order.status
+        if order_status == "search_car" or  order_status == "assigned" or order_status == "arrived":
 
-        return {
-                
-                "order":order,
-                "routes":routes
-        }
+            routes = db.query(models.Route).filter(models.Route.order_id == order.order_id).all() 
+
+            return {
+                    
+                    "order":order,
+                    "routes":routes
+            }
+        else:
+            return {"order": None}   
 
     
 @router.post("/estimate", status_code=status.HTTP_201_CREATED)
