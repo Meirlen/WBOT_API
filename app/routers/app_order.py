@@ -145,6 +145,10 @@ async def create_order( order: schemas.UserOrderCreate,
         price_info = get_price_by_route_baursak(route_array)
         aggregator = "Бауырсак"
 
+    if app_type == "a":
+        price_info = get_price_by_route_alem(route_array)
+        aggregator = "Алем"    
+
     if app_type == "j":
        price_info = order.tariff
        aggregator = "Jol KZ"
