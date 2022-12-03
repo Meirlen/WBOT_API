@@ -36,8 +36,8 @@ from yandex.calc_price import *
 # print(price_info)
 
 
-# Baursak price calc
-from baursak.calc_b_price import *
+# # Baursak price calc
+# from baursak.calc_b_price import *
 
 # price_info = get_price_by_route_baursak(routes)
 # print(price_info)

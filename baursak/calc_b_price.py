@@ -32,7 +32,7 @@ def get_price_by_route_baursak(routes):
                              json=json_data)
 
 
-        print(response)
+        print(response.text)
 
         try:
             response_json = json.loads(response.text)
@@ -63,4 +63,5 @@ def get_price_by_route_baursak(routes):
     return None
 
 # routes = [[73.086701,49.80339],[72.870346,49.632961]]
+# get_price_by_route_baursak(routes)
 
