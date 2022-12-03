@@ -77,6 +77,11 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:admin@localhost/alem'
 # Clear db cash
 # docker-compose down --volumes
 
+# Db cred:
+# db name = alem
+# db user = postgres
+# db pass = admin
+# 
 
 # git rm -r --cached .
 # git add .

@@ -4,7 +4,6 @@ import requests
 from yandex.json_data import *
 from yandex.yandex_config import *
 
-
 # route = [
 #                 {
 #                 "short_text": "улица Алиханова, 13",
@@ -45,8 +44,8 @@ def send_order_to_yandex(routes,client_phone_number):
         route_array.append({
                                 "short_text": route.short_text,
                                 "geopoint": [
-                                    round(route.geo_point[0], 6),
                                     round(route.geo_point[1], 6),
+                                    round(route.geo_point[0], 6),
                                 ],
                                 "fullname": route.fullname,
                                 "type": point_type,
