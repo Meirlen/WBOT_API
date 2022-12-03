@@ -31,10 +31,9 @@ class Order(Base):
     tariff = Column(String, nullable=False) 
     # c - Comfort
     # e - Econom
+    fb_token = Column(String, nullable=True) 
 
-    # Driver location
-    d_lat = Column(Float)
-    d_lng = Column(Float)
+  
 
 
 
@@ -70,10 +69,25 @@ class Route(Base):
 
 
 
+# Assigned drivers
+class Driver(Base):
+    __tablename__ = "drivers"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    driver_name = Column(String, nullable=False)
+    car_info = Column(String, nullable=False)
+    phone =  Column(String, nullable=False)
+    price = Column(String, nullable=False)
+    order_id = Column(Integer, ForeignKey(
+        "orders.order_id"), nullable=True)
+
+    # owner = relationship("Order")
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, nullable=False)
-    phone_number = Column(String, nullable=False, unique=True)
+    device_id = Column(String, nullable=False, unique=True)
+    phone_number = Column(String, nullable=True)
     user_name = Column(String, nullable=True)
 
     role = Column(String, nullable=False,server_default='user') 
@@ -82,6 +96,8 @@ class User(Base):
     # adriver = app driver
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
+
+    fb_token = Column(String, nullable=True)
 
 
 class Otp(Base):

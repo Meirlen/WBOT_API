@@ -57,6 +57,9 @@ class Login(BaseModel):
     phone_number: str
 
 
+class RegRequest(BaseModel):
+    device_id: str
+
 class CheckOtp(BaseModel):
     phone_number: str
     otp: str
@@ -81,6 +84,13 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class FbToken(BaseModel):
+    token: str
+
+
+class UpdatePhone(BaseModel):
+    phone: str
 
 
 class TokenData(BaseModel):

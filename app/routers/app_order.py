@@ -45,6 +45,7 @@ def create_yandex_order(db,order_id,routes,client_phone_number):
 
 
 
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_order( order: schemas.UserOrderCreate,
                         response: Response,
@@ -60,10 +61,11 @@ async def create_order( order: schemas.UserOrderCreate,
     # create new order
     user = current_user
     user_id = current_user.id
+    user_fb_token = current_user.fb_token
 
 
     # add to local db
-    new_order = models.Order(user_id = user_id,app_type = order.app_type,tariff = order.tariff)
+    new_order = models.Order(user_id = user_id,app_type = order.app_type,tariff = order.tariff,fb_token = user_fb_token)
     db.add(new_order)
     db.commit()
     db.refresh(new_order)
@@ -141,14 +143,18 @@ async def create_order( order: schemas.UserOrderCreate,
     if app_type == "b":
         price_info = get_price_by_route_baursak(route_array)
         aggregator = "Бауырсак"
+
+    if app_type == "j":
+       price_info = order.tariff
+       aggregator = "Jol KZ"
     
   
 
-    if  price_info != None:
-            if order.tariff == "e":
-                price = price_info[1]['price']
-            if order.tariff == "c":
-                price = price_info[0]['price']    
+    # if  price_info != None:
+    #         if order.tariff == "e":
+    #             price = price_info[1]['price']
+    #         if order.tariff == "c":
+    #             price = price_info[0]['price']    
     if user:
         # send to telegram admin user order created message
 
@@ -182,15 +188,25 @@ def calculate_order_created_time_in_minutes(created_at):
 def get_user_last_order_status(db: Session = Depends(get_db),current_user = Depends(oauth2.get_current_user)):
 
     user = current_user
-    user_id = current_user.id
+    if user == None:
+        return {
+                   "order": None,
+                   "routes":None,
+                   "driver":None,
 
+                   }
+
+    user_id = current_user.id
+               
     # get last order by ORDER DESC
     order = db.query(models.Order).filter(models.Order.user_id == user_id).order_by(models.Order.order_id.desc()).first() 
     if not order:
             print("The user dont't have  any order proccess")
             return {
-                   "order": None
-                   
+                   "order": None,
+                   "routes":None,
+                   "driver":None,
+
                    }
     
 
@@ -199,23 +215,41 @@ def get_user_last_order_status(db: Session = Depends(get_db),current_user = Depe
 
     if not order or after_created_min > 120:
         print("The user dont't have  any order proccess")
-        return {"order": None}
+        return {   "order": None,
+                   "routes":None,
+                   "driver":None,}
+
+
+    elif  order.status == "arrived" and after_created_min > 5:
+        return {   "order": None,
+                   "routes":None,
+                   "driver":None,}               
     else: 
         order_status =  order.status
         if order_status == "search_car" or  order_status == "assigned" or order_status == "arrived":
 
-            routes = db.query(models.Route).filter(models.Route.order_id == order.order_id).all() 
+            routes = db.query(models.Route).filter(models.Route.order_id == order.order_id).all()
+
+
+            driver = None
+
+            if order_status == "assigned" or order_status == "arrived":
+                driver = db.query(models.Driver).filter(models.Driver.order_id == order.order_id).order_by(models.Driver.order_id.desc()).first()
 
             return {
                     
                     "order":order,
-                    "routes":routes
+                    "routes":routes,
+                    "driver":driver
             }
         else:
-            return {"order": None}   
+            return { 
+                   "order": None,
+                   "routes":None,
+                   "driver":None,}   
 
     
-@router.post("/estimate", status_code=status.HTTP_201_CREATED)
+@router.post("/estimate", status_code=status.HTTP_200_OK)
 async def create_draft(order: schemas.OrderEstimate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     routes = order.route
     route_array = []
@@ -252,26 +286,19 @@ async def update_status(order: schemas.OrderStatus,db: Session = Depends(get_db)
     # get last order by ORDER DESC
     # change order status to Assigned 
     order_query = db.query(models.Order).filter(models.Order.order_id == order.order_id)
-    order_query.update({"status":"assigned"}, synchronize_session=False)    
+    order_query.update({"status":order.status}, synchronize_session=False)    
     db.commit()
+
+    if order.status == "cancel_by_user":
+       send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ КЛИЕНТ ОМЕНИЛ ЗАКАЗ! \n ' + str(order.order_id) )  
+
+
+    
 
 
     return {"order_id": order.order_id, "status": order.status}
 
 
-@router.post("/driver_location", status_code=status.HTTP_200_OK)
-async def get_driver_location(request: schemas.DriverLocation,db: Session = Depends(get_db)):
-   
-    
-    # get last order by ORDER DESC
-    # change order status to Assigned 
-    order = db.query(models.Order).filter(models.Order.order_id == request.order_id).first()
-
-
-    return  {
-            "lat":order.d_lat,
-            "lng":order.d_lng
-    }
 
 
 

@@ -51,8 +51,8 @@ async def create_order(order: schemas.OrderCreate,response: Response,background_
     # response.headers['Access-Control-Allow-Origin'] = 'http://165.22.13.172'
 
     # create new order
-    new_order = models.Order(user_id = order.user_id,app_type = order.app_type,tariff = order.tariff)
     user = db.query(models.User).filter(models.User.id == order.user_id).first()
+    new_order = models.Order(user_id = order.user_id,app_type = order.app_type,tariff = order.tariff)
 
     
     db.add(new_order)
@@ -220,19 +220,19 @@ async def update_status(order: schemas.OrderStatus,db: Session = Depends(get_db)
     return {"order_id": order.order_id, "status": order.status}
 
 
-@router.post("/driver_location", status_code=status.HTTP_200_OK)
-async def get_driver_location(request: schemas.DriverLocation,db: Session = Depends(get_db)):
+# @router.post("/driver_location", status_code=status.HTTP_200_OK)
+# async def get_driver_location(request: schemas.DriverLocation,db: Session = Depends(get_db)):
    
     
-    # get last order by ORDER DESC
-    # change order status to Assigned 
-    order = db.query(models.Order).filter(models.Order.order_id == request.order_id).first()
+#     # get last order by ORDER DESC
+#     # change order status to Assigned 
+#     order = db.query(models.Order).filter(models.Order.order_id == request.order_id).first()
 
 
-    return  {
-            "lat":order.d_lat,
-            "lng":order.d_lng
-    }
+#     return  {
+#             "lat":order.d_lat,
+#             "lng":order.d_lng
+#     }
 
 
 

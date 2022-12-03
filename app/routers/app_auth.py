@@ -11,6 +11,43 @@ from .. import oauth2
 router = APIRouter(tags=['Authentication'])
 
 
+
+@router.post('/mobile/register_device')
+def login(user_credentials: schemas.RegRequest, db: Session = Depends(database.get_db)):
+
+    user = db.query(models.User).filter(
+        models.User.device_id == user_credentials.device_id).first()
+
+    if not user:
+        # Registr new user
+        new_user = models.User(device_id = user_credentials.device_id, role="auser",user_name = "android user")
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        user = db.query(models.User).filter(
+            models.User.device_id == user_credentials.device_id).first()   
+
+
+
+ 
+
+
+
+    # create a token
+    # return token
+    access_token = oauth2.create_access_token(data={"user_id": user.id})
+    return {
+            "code": 200,
+            "message":"Success login",
+            "data":{
+                "seconds_before_send":20,
+                "user":user,
+                "token":access_token,
+                "token_type": "bearer"}
+                }
+
+
+
 @router.post('/mobile/login')
 def login(user_credentials: schemas.Login, db: Session = Depends(database.get_db)):
 
@@ -78,6 +115,56 @@ def check_otp(user_credentials: schemas.CheckOtp, db: Session = Depends(database
 
 
 
+@router.post('/mobile/fb_token')
+def register_fb_token(fbToken: schemas.FbToken,current_user = Depends(oauth2.get_current_user),db: Session = Depends(database.get_db)):
+
+    user = current_user
+    user_id = current_user.id
+
+       
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
+
+
+    user_query = db.query(models.User).filter(
+            models.User.id == user_id)
+    user_query.update({"fb_token":fbToken.token}, synchronize_session=False)    
+    db.commit()
+
+
+    return {
+            "code": 200
+
+                }
+
+
+
+
+@router.post('/mobile/update_phone')
+def update_phone(param: schemas.UpdatePhone,current_user = Depends(oauth2.get_current_user),db: Session = Depends(database.get_db)):
+
+    user = current_user
+    user_id = current_user.id
+
+       
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
+
+
+    user_query = db.query(models.User).filter(
+            models.User.id == user_id)
+    user_query.update({"phone_number":param.phone}, synchronize_session=False)    
+    db.commit()
+
+
+    return {
+            "code": 200
+
+                }
 
 
     

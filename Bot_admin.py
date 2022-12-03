@@ -1,8 +1,9 @@
 from yandex.abc import *
 from admin.telegram_api import *
+from app.database import get_db_singleton
+from yandex.order_crud_status import update_order_status_in_db_and_fb
 
-
-def send_driver_info_message(status,phone_num):
+def send_driver_info_message(order_id,status,phone_num):
     driver_name = "Miras"
     car_color = "красный"
     car_model = "МЕРСЕДЕС"
@@ -20,13 +21,9 @@ def send_driver_info_message(status,phone_num):
        driver_info.title = "💁 *- Вас ожидает такси.*\n\n*"  
 
 
-
-    db = next(get_db())
-    user = db.query(models.User).filter(models.User.phone_number == phone_num).first()   
-
-    send_driver_assigned_info_to_whatsapp(user.id,driver_info,status)
+    update_order_status_in_db_and_fb(order_id,driver_info,status)
 
 
 
 # send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n The token has expired.')
-send_driver_info_message("arrived","77711474766")    
+# send_driver_info_message(2,"arrived","77711474766")    
