@@ -156,7 +156,7 @@ def handle_driver_object(response,order_info):
                 print("Заказ отменен клиентом: ")  
             if status == "expired":
                 print("Машина не найдена")
-                send_push_notification(order_info.fb_token,"💁 К сожалению машина не найдена!",car_info)
+                send_push_notification(order_info.fb_token,"💁 К сожалению машина не найдена!","Высокий спрос")
                 driver_not_found_info_in_db_and_fb(order_info.order_id)  
 
                 
