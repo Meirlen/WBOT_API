@@ -47,7 +47,7 @@ def get_price_by_route_baursak(routes):
                 costs = response_json['data']['costs']
                 for cost in costs:
                     result.append({
-                                  "price":cost['cost'],
+                                  "price":str(cost['cost']),
                                   "tariff_name":cost['crew_group_id']
                                   })
       

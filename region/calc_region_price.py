@@ -45,7 +45,7 @@ def get_price_by_route_region(routes):
                 costs = response_json['estimations']
                 for cost in costs:
                     result.append({
-                                  "price":cost['cost']['amount'],
+                                  "price":str(int(cost['cost']['amount'])),
                                   "tariff_name":cost['tariff']
                                   })
       

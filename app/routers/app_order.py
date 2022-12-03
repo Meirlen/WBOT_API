@@ -13,6 +13,7 @@ from baursak.calc_b_price import *
 from region.calc_region_price import *
 from yandex.create_order import *
 from admin.telegram_api import *
+from alem.calc_alem_price import get_price_by_route_alem
 
 from app.fb_helper import create_order_in_firebase,change_order_status
 
@@ -264,6 +265,7 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
     yandex_price_info =   get_price_by_route(route_array)
     baursak_price_info = get_price_by_route_baursak(route_array)
     region_price_info = get_price_by_route_region(route_array)
+    alem_price_info = get_price_by_route_alem(route_array)
 
 
     print(route_array)
@@ -272,7 +274,8 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
     return  {
          "yandex":yandex_price_info,
          "baursak": baursak_price_info,
-         "region": region_price_info
+         "region": region_price_info,
+         "alem": alem_price_info,
 
     }
 
