@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import models
 from .database import engine
-from .routers import order,user,auth,webhook,app_auth,app_order,app_auth_otp
+from .routers import order,user,auth,webhook,app_auth,app_order
 
 
 app = FastAPI()
@@ -26,7 +26,6 @@ app.include_router(app_order.router)
 
 # Mobile api
 app.include_router(app_auth.router)
-app.include_router(app_auth_otp.router)
 
 
 
