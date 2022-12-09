@@ -5,7 +5,7 @@ import requests
 def send_sms(code,phone):
 
     app_hash = "UgngZHxDDxj" # prod
-    app_hash = "jg9AkTD8yOw" # debug
+    # app_hash = "jg9AkTD8yOw" # debug
 
     message  = 'Sapar KZ код: '+str(code)+' '+app_hash
 
