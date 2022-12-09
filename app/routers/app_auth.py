@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Response
+from fastapi import APIRouter, Depends, status, HTTPException, Response,BackgroundTasks
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy import null
 from sqlalchemy.orm import Session
@@ -7,6 +7,7 @@ import random
 import app.database as database, app.utils as utils
 from .. import models, schemas as schemas
 from .. import oauth2
+from app.send_sms import *
 
 router = APIRouter(tags=['Authentication'])
 
@@ -28,11 +29,6 @@ def login(user_credentials: schemas.RegRequest, db: Session = Depends(database.g
             models.User.device_id == user_credentials.device_id).first()   
 
 
-
- 
-
-
-
     # create a token
     # return token
     access_token = oauth2.create_access_token(data={"user_id": user.id})
@@ -49,7 +45,7 @@ def login(user_credentials: schemas.RegRequest, db: Session = Depends(database.g
 
 
 @router.post('/mobile/login')
-def login(user_credentials: schemas.Login, db: Session = Depends(database.get_db)):
+def login(user_credentials: schemas.Login, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
 
     user = db.query(models.User).filter(
         models.User.phone_number == user_credentials.phone_number).first()
@@ -70,6 +66,9 @@ def login(user_credentials: schemas.Login, db: Session = Depends(database.get_db
     db.add(new_otp)
     db.commit()
     db.refresh(new_otp)
+
+    background_tasks.add_task(send_sms,otp_code, user_credentials.phone_number) # Send sms to the phone number
+
 
     return {"code": 200, "message":"Code sended", "data":{"seconds_before_send":20,"user":None,"token":None}}
 

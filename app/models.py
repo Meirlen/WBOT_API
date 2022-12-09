@@ -87,8 +87,7 @@ class Driver(Base):
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, nullable=False)
-    device_id = Column(String, nullable=False, unique=True)
-    phone_number = Column(String, nullable=True)
+    phone_number = Column(String,  unique=True)
     user_name = Column(String, nullable=True)
 
     role = Column(String, nullable=False,server_default='user') 
