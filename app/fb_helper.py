@@ -13,7 +13,7 @@ db = firestore.client()
 
 
 
-def set_order_in_firebase(order_id,price,route,visibilty):
+def set_order_in_firebase(order_id,price,route,visibilty,createdAt):
     db.collection("orders").document(str(order_id)).set({
 
         "price":price,
@@ -25,7 +25,8 @@ def set_order_in_firebase(order_id,price,route,visibilty):
             "lat":None,
             "lng":None
         },
-        "route":route
+        "route":route,
+        "createdAt":str(createdAt)
 
         })
 
@@ -56,10 +57,10 @@ def update_order_visibilty_in_firebase(order_id,visibilty):
         })
 
 
-def create_order_in_firebase(order_id,price,route):
+def create_order_in_firebase(order_id,price,route,createdAt):
 
     # Create order for 2km drivers = A category
-    set_order_in_firebase(order_id,price,route,"A")
+    set_order_in_firebase(order_id,price,route,"A",createdAt)
     print("Order with id = ",order_id, ' succesfully created in Firebase with status A')
 
     # Wait 10 seconds and update order for 4km drivers = B category

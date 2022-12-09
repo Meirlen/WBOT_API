@@ -31,6 +31,7 @@ class Order(Base):
     tariff = Column(String, nullable=False) 
     # c - Comfort
     # e - Econom
+    price = Column(String, nullable=True) 
     fb_token = Column(String, nullable=True) 
 
   

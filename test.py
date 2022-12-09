@@ -87,8 +87,8 @@ order = {
     "type": "percent",
     "value": 0
   },
-  "status": "driving" ,
-    # "status": "waiting" ,
+  # "status": "driving" ,
+    "status": "waiting" ,
 
   "status_updates": [
     {
@@ -281,4 +281,4 @@ order = {
 from yandex.abc import *
 
 response = order
-handle_driver_object(response,OrderInfo("bla bla bla","search_car",7,"dZD_9UzgSSuI-QwqeN9j1z:APA91bG-uAT46KtS1O-VWTqAmpfkpdHQ2mxl1xbmp6l651ivUxZ9NGebCutBbYUMUoFnrxim4gPh1li7wnJZrCd0MSmcWwsZWF5G4pzCUur9m5BKakvoA4dMR29CtUYadsgBmBLTVbL2"))
+handle_driver_object(response,OrderInfo("bla bla bla","search_car",26,"dZD_9UzgSSuI-QwqeN9j1z:APA91bG-uAT46KtS1O-VWTqAmpfkpdHQ2mxl1xbmp6l651ivUxZ9NGebCutBbYUMUoFnrxim4gPh1li7wnJZrCd0MSmcWwsZWF5G4pzCUur9m5BKakvoA4dMR29CtUYadsgBmBLTVbL2"))

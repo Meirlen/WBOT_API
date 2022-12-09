@@ -33,6 +33,55 @@ def get_orders(db: Session = Depends(get_db)):
     return {"data": orders}
 
 
+@router.get("/bonus_count", )
+def get_bonus_count(db: Session = Depends(get_db),current_user: int = Depends(oauth2.get_current_user)):
+   
+    user_id = current_user.id
+    query = "SELECT * FROM orders WHERE user_id = '"+str(user_id)+"' ORDER BY order_id DESC"
+    orders_query = db.execute(query)
+
+    bounus_info = 0
+    for row in  orders_query :
+        app_type = row['app_type']
+        if app_type == "a" and row['price']!=None:
+           bonus = int(row['price'])/100
+           bounus_info = bounus_info+int(bonus)
+
+
+
+    return {"bonus_count": bounus_info}
+
+
+
+@router.get("/history", )
+def get_orders_history(db: Session = Depends(get_db),current_user: int = Depends(oauth2.get_current_user)):
+
+    user_id = current_user.id
+
+       # get last order of user if order status == 'assigned','arrived','search_car'
+    query = "SELECT * FROM orders WHERE user_id = '"+str(user_id)+"' ORDER BY order_id DESC"
+    # query = "SELECT * FROM orders INNER JOIN routes ON orders.order_id=routes.order_id;"
+    orders_query = db.execute(query)
+
+    orders = []
+    bounus_info = None
+    for row in  orders_query :
+        bounus_info = None
+        routes = db.query(models.Route).filter(models.Route.order_id == row['order_id']).all()
+        app_type = row['app_type']
+        if app_type == "a" and row['price']!=None:
+           bonus = int(row['price'])/100
+           bounus_info = int(bonus)
+        
+
+        orders.append({"order_info":row, "route":routes, "bounus_info":bounus_info})
+
+
+    # orders = db.query(models.Order).filter(models.Order.user_id == user_id).order_by(models.Order.order_id.desc()).all()
+       
+    return {"orders": orders}    
+
+
 def create_yandex_order(db,order_id,routes,client_phone_number):
 
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
@@ -87,7 +136,8 @@ async def create_order( order: schemas.UserOrderCreate,
     background_tasks.add_task(create_order_in_firebase,
         new_order.order_id,
         "1000 тенге",
-        fb_routes)
+        fb_routes,
+        new_order.created_at)
 
 
 
@@ -106,7 +156,7 @@ async def create_order( order: schemas.UserOrderCreate,
                                     city = route.city,
                                     order_id = new_order.order_id )
 
-        route_array.append([route.geo_point[0],route.geo_point[1]])
+        route_array.append([route.geo_point[1],route.geo_point[0]])
 
         db.add(new_route)
         db.commit()
@@ -122,12 +172,12 @@ async def create_order( order: schemas.UserOrderCreate,
        comment = None 
 
     price_info = None
+    price = None
     aggregator = None
     if tariff == "e":
         tariff = "Эконом"
     if tariff == "c":
             tariff = "Комфорт"     
-    price = None
 
     if app_type == "y":
         price_info = get_price_by_route(route_array)
@@ -155,13 +205,27 @@ async def create_order( order: schemas.UserOrderCreate,
     
   
 
-    # if  price_info != None:
-    #         if order.tariff == "e":
-    #             price = price_info[1]['price']
-    #         if order.tariff == "c":
-    #             price = price_info[0]['price']    
+
+    # PRICE INFO
+    print("Price info", str(price_info))
+    if  price_info != None:
+            if app_type == "a":
+                price = price_info[0]['price']
+
+            else:    
+                if order.tariff == "e":
+                    price = price_info[1]['price']
+                if order.tariff == "c":
+                    price = price_info[0]['price']  
+
+    order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
+    order_query.update({"price":price}, synchronize_session=False)    
+    db.commit()
+
+
+
+    # send to telegram admin user order created message
     if user:
-        # send to telegram admin user order created message
 
         from_address = order.route[0].short_text
 
