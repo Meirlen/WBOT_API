@@ -6,7 +6,7 @@ import requests
     
 
 def send_message_to_telegram_chat(chat_id,text):
-    print(text)
+    # print(text)
     token = TELEGRAM_HTTP_ACCESS_TOKEN
     method  = 'sendMessage'
 
@@ -15,7 +15,7 @@ def send_message_to_telegram_chat(chat_id,text):
             data={'chat_id': chat_id, 'text': text,'parse_mode': 'html'}
         ).json()
 
-    print(response)  
+    # print(response)  
 
 
 def send_message_to_telegram_chat_with_buttons(query):

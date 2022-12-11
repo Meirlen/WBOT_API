@@ -344,16 +344,21 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
     alem_price_info = get_price_by_route_alem(route_array)
 
 
-    print(route_array)
+    # print(route_array)
 
-    
-    return  {
+
+    response =  {
          "yandex":yandex_price_info,
          "baursak": baursak_price_info,
          "region": region_price_info,
          "alem": alem_price_info,
 
     }
+
+    print(response)
+
+    
+    return response
 
 
 
