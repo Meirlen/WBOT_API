@@ -26,7 +26,7 @@ def calculate_price(from_zone,to_zone):
         if to_zone == None:
            return None 
 
-        print(from_zone,'  ',to_zone)
+        # print(from_zone,'  ',to_zone)
 
 
 
@@ -53,7 +53,6 @@ def calculate_price(from_zone,to_zone):
 def get_price_by_route_alem(routes):
 
     result = None
-    print(len(routes))
 
     if len(routes) == 2:
         result = [] 
