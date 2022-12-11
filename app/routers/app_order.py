@@ -122,7 +122,7 @@ async def create_order( order: schemas.UserOrderCreate,
 
     # add to firebase
     
-    print("Order created in Postgres")
+    print("\nUser created order , user_phone", str(user.phone_number) )
 
     fb_routes = []
     for route in order.route:
