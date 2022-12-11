@@ -213,10 +213,13 @@ async def create_order( order: schemas.UserOrderCreate,
                 price = price_info[0]['price']
 
             else:    
-                if order.tariff == "e":
-                    price = price_info[1]['price']
-                if order.tariff == "c":
-                    price = price_info[0]['price']  
+                if len(price_info) > 1:
+                    if order.tariff == "e":
+                        price = price_info[1]['price']
+                    if order.tariff == "c":
+                        price = price_info[0]['price']  
+                else:
+                    price = "0"        
 
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
     order_query.update({"price":price}, synchronize_session=False)    
