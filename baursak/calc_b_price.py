@@ -32,11 +32,9 @@ def get_price_by_route_baursak(routes):
                              json=json_data)
 
 
-        print(response.text)
 
         try:
             response_json = json.loads(response.text)
-            print(response.status_code)
 
             if response.status_code == 401:
                 print("Unauthorized 401")
