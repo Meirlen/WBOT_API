@@ -19,7 +19,7 @@ def get_zones_by_coordintes(lat,lng):
 
 
 def calculate_price(from_zone,to_zone):
-        print('calculate_price',from_zone,' ', to_zone)
+        # print('calculate_price',from_zone,' ', to_zone)
 
         if from_zone == None:
            return None 

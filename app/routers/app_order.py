@@ -335,7 +335,7 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
         route_name_array.append(route.short_text)
 
 
-    print("Client request estimate , route: ", str(route_name_array))
+    print("\nCLIENT REQUEST ESTIMATE , route: ", str(route_name_array))
     # if yandex_price_info == None:
     # yandex_price_info = get_price_by_route(route_array)
     yandex_price_info =   get_price_by_route(route_array)
