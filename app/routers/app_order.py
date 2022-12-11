@@ -325,12 +325,17 @@ def get_user_last_order_status(db: Session = Depends(get_db),current_user = Depe
 async def create_draft(order: schemas.OrderEstimate,response: Response,background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     routes = order.route
     route_array = []
+    route_name_array = []
+
     for route in routes:
         lat_point = round(route.geo_point[1], 6)
         lon_point = round(route.geo_point[0], 6)
 
         route_array.append([lat_point,lon_point])
+        route_name_array.append(route.short_text)
 
+
+    print("Client request estimate , route: ", str(route_name_array))
     # if yandex_price_info == None:
     # yandex_price_info = get_price_by_route(route_array)
     yandex_price_info =   get_price_by_route(route_array)
