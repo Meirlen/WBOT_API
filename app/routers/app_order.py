@@ -122,7 +122,7 @@ async def create_order( order: schemas.UserOrderCreate,
 
     # add to firebase
     
-    print("\nUser created order , user_phone", str(user.phone_number) )
+    print("\nUSER CREATED ORDER , user_phone", str(user.phone_number) )
 
     fb_routes = []
     for route in order.route:
@@ -344,7 +344,7 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
     alem_price_info = get_price_by_route_alem(route_array)
 
 
-    # print(route_array)
+    print(route_array)
 
 
     response =  {
@@ -355,7 +355,7 @@ async def create_draft(order: schemas.OrderEstimate,response: Response,backgroun
 
     }
 
-    print(response)
+    # print(response)
 
     
     return response
