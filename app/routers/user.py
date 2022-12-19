@@ -48,7 +48,7 @@ def get_user(id: int, db: Session = Depends(get_db), ):
 @router.get('/driver/activity', status_code=status.HTTP_200_OK)
 def get_driver_activity(db: Session = Depends(get_db),current_user: int = Depends(oauth2.get_current_user)):
 
-    active_order = db.query(models.Order).filter(models.Order.driver_id == current_user.id,models.Order.status != "completed" or models.Order.status != "open").first()
+    active_order = db.query(models.Order).filter(models.Order.driver_id == current_user.id,models.Order.status != "completed" or models.Order.status != "search_car").first()
     if active_order == None:
        return {"order_id":None}
 

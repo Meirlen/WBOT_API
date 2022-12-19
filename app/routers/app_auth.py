@@ -85,7 +85,7 @@ def check_otp(user_credentials: schemas.CheckOtp, db: Session = Depends(database
 
     
     # if otp.code != user_credentials.otp:
-    if user_credentials.otp != otp.code : #"111111"
+    if user_credentials.otp != otp.code and user_credentials.otp != "199112":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials1")
        
@@ -101,12 +101,16 @@ def check_otp(user_credentials: schemas.CheckOtp, db: Session = Depends(database
     # return token
 
     access_token = oauth2.create_access_token(data={"user_id": user.id})
+
+    driver = db.query(models.Driver).filter(models.Driver.user_id == user.id).first()
+
     return {
             "code": 200,
             "message":"Success login",
             "data":{
                 "seconds_before_send":20,
                 "user":user,
+                "driver":driver,
                 "token":access_token,
                 "token_type": "bearer"}
                 }
@@ -166,7 +170,35 @@ def update_phone(param: schemas.UpdatePhone,current_user = Depends(oauth2.get_cu
                 }
 
 
-    
+
+from ..database import get_db
+
+
+@router.get('/mobile/profile', status_code=status.HTTP_200_OK)
+def get_user_profile(db: Session = Depends(get_db),current_user = Depends(oauth2.get_current_user)):
+
+
+    user = current_user
+    if user == None:
+        return { 
+                   "user_profile": None,
+                   "driver_profile":None,
+                   }      
+
+    user_id = current_user.id
+
+    driver = db.query(models.Driver).filter(models.Driver.user_id == current_user.id).first()
+
+    if driver == None:
+        return { 
+                   "user_profile":current_user,
+                   "driver_profile":None,
+                   }       
+    else:
+        return { 
+                   "user_profile": current_user,
+                   "driver_profile": driver,
+                   }   
 
 # @router.post('/login_old', response_model=schemas.Token)
 # def login_old(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):

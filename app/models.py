@@ -33,6 +33,10 @@ class Order(Base):
     # e - Econom
     price = Column(String, nullable=True) 
     fb_token = Column(String, nullable=True) 
+    driver_id = Column(Integer, nullable=True) 
+
+
+
 
   
 
@@ -78,9 +82,21 @@ class Driver(Base):
     driver_name = Column(String, nullable=False)
     car_info = Column(String, nullable=False)
     phone =  Column(String, nullable=False)
-    price = Column(String, nullable=False)
+    price = Column(String, nullable=True)
     order_id = Column(Integer, ForeignKey(
         "orders.order_id"), nullable=True)
+
+    # Only for sapar drivers    
+    type = Column(String, nullable=True) #sapar
+    user_id = Column(Integer, ForeignKey(
+        "users.id"), nullable=True)
+
+    car_model = Column(String, nullable=True)
+    car_color = Column(String, nullable=True)
+    car_body = Column(String, nullable=True)
+    car_year = Column(String, nullable=True)
+    car_number = Column(String, nullable=True)
+
 
     # owner = relationship("Order")
 
@@ -98,6 +114,10 @@ class User(Base):
                         nullable=False, server_default=text('now()'))
 
     fb_token = Column(String, nullable=True)
+
+
+
+
 
 
 class Otp(Base):

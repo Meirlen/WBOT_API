@@ -18,7 +18,7 @@ def set_order_in_firebase(order_id,price,route,visibilty,createdAt):
 
         "price":price,
         "visibilty":visibilty,
-        "status":"open",
+        "status":"search_car",
         "driver_id":None,
         "order_id":str(order_id),
         "driver":{
