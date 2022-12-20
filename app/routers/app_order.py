@@ -15,7 +15,7 @@ from yandex.create_order import *
 from admin.telegram_api import *
 from alem.calc_alem_price import get_price_by_route_alem
 
-from app.fb_helper import create_order_in_firebase,change_order_status
+from app.fb_helper import create_order_in_firebase,change_order_status,update_order_status_in_firebase
 
 
 router = APIRouter(
@@ -133,11 +133,7 @@ async def create_order( order: schemas.UserOrderCreate,
                 "lat":route.geo_point[0],
                 "lng":route.geo_point[1]},
             )
-    background_tasks.add_task(create_order_in_firebase,
-        new_order.order_id,
-        "1000 тенге",
-        fb_routes,
-        new_order.created_at)
+
 
 
 
@@ -220,6 +216,14 @@ async def create_order( order: schemas.UserOrderCreate,
                         price = price_info[0]['price']  
                 else:
                     price = "0"        
+
+
+    background_tasks.add_task(create_order_in_firebase,
+        new_order.order_id,
+        str(price),
+        fb_routes,
+        new_order.created_at)
+
 
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
     order_query.update({"price":price}, synchronize_session=False)    
@@ -374,7 +378,8 @@ async def update_status(order: schemas.OrderStatus,db: Session = Depends(get_db)
     db.commit()
 
     if order.status == "cancel_by_user":
-       send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ КЛИЕНТ ОМЕНИЛ ЗАКАЗ! \n ' + str(order.order_id) )  
+        update_order_status_in_firebase(order.order_id,order.status)
+        send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ КЛИЕНТ ОМЕНИЛ ЗАКАЗ! \n ' + str(order.order_id) )  
 
 
     

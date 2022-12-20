@@ -95,6 +95,6 @@ git pull
 docker-compose up --force-recreate --build -d
 
 git add .
-git commit -m "add alem price calculator"
+git commit -m "add driver role"
 git push origin master
 # Добрый день, так как продукт новый были перебои на стороне сервера, сейчас бот работает в сатбильном режиме.Приносим извинения за доставленные неудобства.
