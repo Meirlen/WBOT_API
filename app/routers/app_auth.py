@@ -200,6 +200,37 @@ def get_user_profile(db: Session = Depends(get_db),current_user = Depends(oauth2
                    "driver_profile": driver,
                    }   
 
+
+
+
+
+
+@router.post('/mobile/update_driver_status')
+def update_driver_status(param: schemas.UpdateDriverStatus,current_user = Depends(oauth2.get_current_user),db: Session = Depends(database.get_db)):
+
+    user = current_user
+    user_id = current_user.id
+
+       
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
+
+
+    user_query = db.query(models.Driver).filter(
+            models.Driver.user_id == user_id)
+
+    print(user_id)        
+    user_query.update({"is_online":param.status}, synchronize_session=False)    
+    db.commit()
+
+
+    return {
+            "status": param.status
+
+                }
+
 # @router.post('/login_old', response_model=schemas.Token)
 # def login_old(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
 

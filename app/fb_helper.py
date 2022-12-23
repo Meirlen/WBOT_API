@@ -13,7 +13,7 @@ db = firestore.client()
 
 
 
-def set_order_in_firebase(order_id,price,route,visibilty,createdAt):
+def set_order_in_firebase(order_id,price,route,visibilty,createdAt,is_share_trip,passenger_count):
     db.collection("orders").document(str(order_id)).set({
 
         "price":price,
@@ -26,8 +26,9 @@ def set_order_in_firebase(order_id,price,route,visibilty,createdAt):
             "lng":None
         },
         "route":route,
-        "createdAt":str(createdAt)
-
+        "shareTrip":str(is_share_trip),
+        "createdAt":str(createdAt),
+        "passenger_count":str(passenger_count)
         })
 
 def update_order_status_in_firebase(order_id,status):
@@ -57,10 +58,10 @@ def update_order_visibilty_in_firebase(order_id,visibilty):
         })
 
 
-def create_order_in_firebase(order_id,price,route,createdAt):
+def create_order_in_firebase(order_id,price,route,createdAt,is_share_trip = None,passenger_count = None):
 
     # Create order for 2km drivers = A category
-    set_order_in_firebase(order_id,price,route,"A",createdAt)
+    set_order_in_firebase(order_id,price,route,"A",createdAt,is_share_trip,passenger_count)
     print("Order with id = ",order_id, ' succesfully created in Firebase with status A')
 
     # Wait 10 seconds and update order for 4km drivers = B category
@@ -115,6 +116,11 @@ class PushRequestBody:
     notification: str 
 
 
+@dataclass
+class PushMultipleRequestBody:
+    registration_ids:list
+    notification: str 
+
 
 def send_push_notification(token_to,title,body):
     fb_token = "AAAALypo7K8:APA91bEeOVuhcq1O4992uQP9ZpqY_Jp_izlHOAy4C85hUIIIZGzFuV1nlenbz0-Ah_WrcqqZW27byrvirHg0eZAqW-qcVj3bmDrnjmIC1I9ACSgvv-Pn8R00EV1iXXgHjS83F5JXLMt0"
@@ -135,7 +141,29 @@ def send_push_notification(token_to,title,body):
 
     print(response)  
 
+
+def send_push_notification_to_multiple_devices(registration_ids,title,body):
+    fb_token = "AAAALypo7K8:APA91bEeOVuhcq1O4992uQP9ZpqY_Jp_izlHOAy4C85hUIIIZGzFuV1nlenbz0-Ah_WrcqqZW27byrvirHg0eZAqW-qcVj3bmDrnjmIC1I9ACSgvv-Pn8R00EV1iXXgHjS83F5JXLMt0"
+
+    
+    notification = Notification(title,body,"default")
+    requestBody = PushMultipleRequestBody(registration_ids,notification)
+    
+    body = json.dumps(dataclasses.asdict(requestBody))
+
+
+
+    response = requests.post(
+            url='https://fcm.googleapis.com/fcm/send',
+            headers={"Authorization":"key="+fb_token,"Content-Type":"application/json"},
+            data=body
+        ).json()
+
+    print(response)  
 # create_order_in_firebase(555,"500","route")
 # print(attach_driver_to_order(4,77))
 # to_token = "dZD_9UzgSSuI-QwqeN9j1z:APA91bG-uAT46KtS1O-VWTqAmpfkpdHQ2mxl1xbmp6l651ivUxZ9NGebCutBbYUMUoFnrxim4gPh1li7wnJZrCd0MSmcWwsZWF5G4pzCUur9m5BKakvoA4dMR29CtUYadsgBmBLTVbL2"
 # send_push_notification(to_token,"💁 - К вам выехала машина.","Мазда серая 6666")
+
+# registration_ids = ["feAeLVYvRJWdd59sx5SWc_:APA91bEhNVpQx7PkbdgGsX4LNRhXqy2xuxSoghYSQ9leEwSx1LWUwn0JCbwlkhgw0nYttg2iI9SPf4HRTUWGyAY6qPKTPMozFcjj926HiD3pDjGbRXMjEGFkFUlHZeaiu3VA9fVMSLzv"]
+# send_push_notification_to_multiple_devices(registration_ids,"💁 - К вам выехала машина.","Мазда серая 6666")

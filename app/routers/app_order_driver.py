@@ -136,6 +136,12 @@ def get_user_driver_last_order_status(db: Session = Depends(get_db),current_user
 
     # get last order by ORDER DESC
     order = db.query(models.Order).filter(models.Order.order_id == driver_order_id).order_by(models.Order.order_id.desc()).first() 
+    if order == None:
+        return { 
+            "order": None,
+            "routes":None,
+            "driver":driver,
+            }      
     order_status = order.status
     if  order_status == "assigned" or order_status == "arrived":  
         routes = db.query(models.Route).filter(models.Route.order_id == driver_order_id).all()

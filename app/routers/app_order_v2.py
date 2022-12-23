@@ -19,7 +19,7 @@ from app.fb_helper import create_order_in_firebase,change_order_status,update_or
 
 
 router = APIRouter(
-    prefix="/mobile/order",
+    prefix="/v2/mobile/order",
     tags=['Orders']
 )
 
@@ -113,11 +113,8 @@ def create_yandex_order(db,order_id,routes,client_phone_number):
 
 
 
-
-
-
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_order( order: schemas.UserOrderCreate,
+async def create_order_new(order: schemas.UserOrderCreateNew,
                         response: Response,
                         background_tasks: BackgroundTasks,
                         db: Session = Depends(get_db),
@@ -135,7 +132,14 @@ async def create_order( order: schemas.UserOrderCreate,
 
 
     # add to local db
-    new_order = models.Order(user_id = user_id,app_type = order.app_type,tariff = order.tariff,fb_token = user_fb_token)
+    new_order = models.Order(   user_id = user_id,
+                                app_type = "sapar",
+                                tariff = order.tariff,
+                                fb_token = user_fb_token,
+                                is_share_trip = order.is_share_trip,
+                                passenger_count = order.passenger_count,
+                                
+                            )
     db.add(new_order)
     db.commit()
     db.refresh(new_order)
@@ -180,69 +184,33 @@ async def create_order( order: schemas.UserOrderCreate,
 
     # calculate orders
 
-    app_type = order.app_type
     tariff= order.tariff
 
     comment= order.comment
     if comment == "":
        comment = None 
 
-    price_info = None
-    price = None
-    aggregator = None
     if tariff == "e":
         tariff = "Эконом"
     if tariff == "c":
             tariff = "Комфорт"     
 
-    if app_type == "y":
-        price_info = get_price_by_route(route_array)
-        aggregator = "Яндекс"
-        phone_number = user.phone_number.replace('7', '8', 1)
-        print("User phone num ", phone_number)
-        create_yandex_order(db,order_id,routes,phone_number)
 
-    if app_type == "r":
-        print("Region arr ", route_array)
-        price_info =  get_price_by_route_region(route_array)
-        aggregator = "Регион"
-
-    if app_type == "b":
-        price_info = get_price_by_route_baursak(route_array)
-        aggregator = "Бауырсак"
-
-    if app_type == "a":
-        price_info = get_price_by_route_alem(route_array)
-        aggregator = "Алем"    
-
-    if app_type == "j":
-       price_info = order.tariff
-       aggregator = "Jol KZ"
     
   
 
 
     # PRICE INFO
-    print("Price info", str(price_info))
-    if  price_info != None:
-            if app_type == "a":
-                price = price_info[0]['price']
-
-            else:    
-                if len(price_info) > 1:
-                    if order.tariff == "e":
-                        price = price_info[1]['price']
-                    if order.tariff == "c":
-                        price = price_info[0]['price']  
-                else:
-                    price = "0"        
+    price = order.price   
 
 
     background_tasks.add_task(create_order_in_firebase,
         new_order.order_id,
         str(price),
         fb_routes,
-        new_order.created_at)
+        new_order.created_at,
+        order.is_share_trip,
+        order.passenger_count)
 
 
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
@@ -277,9 +245,9 @@ async def create_order( order: schemas.UserOrderCreate,
 
              # send push message to active drivers
         send_push_to_active_drivers(db,from_address + " ➡️ "+  to_address)
-        send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n '+ aggregator +  " \n "+ str(user.phone_number)+"\n"+address+"\n Комментарий: "+str(comment))               
+        send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Поступил НОВЫЙ ЗАКАЗ! \n Sapar ' +  " \n "+ str(user.phone_number)+"\n"+address+"\n Комментарий: "+str(comment))               
 
-    return {"order_id": order_id, "app_type": app_type}
+    return {"order_id": order_id, "app_type": "sapar"}
 
 
 

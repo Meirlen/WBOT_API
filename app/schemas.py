@@ -36,6 +36,15 @@ class UserOrderCreate(BaseModel):
     tariff:str
     comment:str
 
+class UserOrderCreateNew(BaseModel):
+    route: List[YandexRoute]
+    tariff:str
+    comment:str
+    price:str
+    is_share_trip:int
+    passenger_count:int
+
+
 class UpdateYToken(BaseModel):
     token:str
      
@@ -92,6 +101,9 @@ class FbToken(BaseModel):
 class UpdatePhone(BaseModel):
     phone: str
 
+
+class UpdateDriverStatus(BaseModel):
+    status: int
 
 class TokenData(BaseModel):
     id: Optional[str] = None

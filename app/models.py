@@ -34,6 +34,8 @@ class Order(Base):
     price = Column(String, nullable=True) 
     fb_token = Column(String, nullable=True) 
     driver_id = Column(Integer, nullable=True) 
+    is_share_trip = Column(Integer, nullable=True) # Режим попутчика
+    passenger_count = Column(Integer, nullable=True) 
 
 
 
@@ -80,6 +82,7 @@ class Driver(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     driver_name = Column(String, nullable=False)
+    is_online = Column(Integer, nullable=False) # 0 - online, 1 - offline
     car_info = Column(String, nullable=False)
     phone =  Column(String, nullable=False)
     price = Column(String, nullable=True)
