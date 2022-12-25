@@ -130,4 +130,45 @@ class Otp(Base):
     code = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))      
-                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Assigned templates
+class DriverTemplates(Base):
+    __tablename__ = "driver_templates"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    driver_name = Column(String, nullable=True)
+
+    car_info = Column(String, nullable=True)
+    phone =  Column(String, nullable=True)
+    price = Column(String, nullable=True)
+    car_model = Column(String, nullable=True)
+    car_color = Column(String, nullable=True)
+    car_body = Column(String, nullable=True)
+    car_year = Column(String, nullable=True)
+    car_number = Column(String, nullable=True)         
+
+
+    d_pasport_photo_1 = Column(String, nullable=True)
+    d_pasport_photo_2 = Column(String, nullable=True)               
+    d_pasport_photo_3 = Column(String, nullable=True)               
+
+
+    car_pasport_photo_1 = Column(String, nullable=True)
+    car_pasport_photo_2 = Column(String, nullable=True)
+
+
+    car_photo = Column(String, nullable=True)
+    user_photo = Column(String, nullable=True)

@@ -231,6 +231,16 @@ def update_driver_status(param: schemas.UpdateDriverStatus,current_user = Depend
 
                 }
 
+
+
+
+@router.get("/mobile/driver_templates")
+def get_driver(db: Session = Depends(get_db)):
+   
+    orders = db.query(models.DriverTemplates).all()
+       
+    return {"data": orders}                
+
 # @router.post('/login_old', response_model=schemas.Token)
 # def login_old(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
 

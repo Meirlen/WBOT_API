@@ -111,10 +111,13 @@ class TokenData(BaseModel):
 
 
 class WhatsappMessage(BaseModel):
-    waId: Optional[str] = None 
+    waId: Optional[str] = None  
     senderName: Optional[str] = None 
-    text:str 
+    text:Optional[str] = None 
+    type:Optional[str] = None 
+    data:Optional[str] = None 
     user_id: Optional[int] = None
+
 
 
 class GeoCodeRequest(BaseModel):

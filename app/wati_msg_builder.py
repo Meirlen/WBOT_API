@@ -4,12 +4,117 @@ import time
 
 
 
-def send_greet_message(phone_number,name,user_id):
+def send_greet_message(phone_number,name):
     msg = '💁 Привет <b>'+str(name)+'!</b> ✋\n\n'
-    msg += 'Вас приветствует Такси Бот!\n🚕 .'
+    msg += 'Вас приветствует Сапар Бот!\n🚕 . Я помогу Вам зарегистрироваться в приложении Sapar в качестве водителя.\n\n Давайте начнем с основной информации. Напишите мне ФИО полностью. '
     # time.sleep(5) 
     send_message(phone_number,msg)
-    send_template_ask_fill_address(phone_number,user_id)
+    # send_template_ask_fill_address(phone_number,user_id)
+
+
+
+
+def send_ask_driver_pasport(phone_number):
+    msg = '💁 Сфотогрофируйте и скиньте мне фото <b>Водительского удостворение (Лицевая сторона)</b>:'
+    send_message(phone_number,msg)
+
+
+def send_ask_driver_pasport2(phone_number):
+    msg = '💁 Отлично, теперь сфотогрофируйте и скиньте мне фото <b>Водительского удостворение (Обратная сторона)<b>:\n\n'
+    send_message(phone_number,msg)
+
+
+
+def send_ask_driver_pasport3(phone_number):
+    msg = '💁Нужно подтвердить личность\n\n Cделайте фото вместе с водительским удостворением \n\n'
+    msg += 'Фото должно быть сделано при хорошем качестве'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+    # send_template_ask_fill_address(phone_number,user_id)
+
+
+
+
+
+
+def send_ask_car_info(phone_number):
+    msg = '💁 Давайте теперь заполним информацию о вашем <b>авто<b>\n\n'
+    msg += 'Напишите <b>марка/модель авто<b>, Например: Toyota Camry'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+
+
+def send_ask_car_info2(phone_number):
+    msg = '💁 <b>Гос номер:<b>\n\n'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+
+
+
+def send_ask_car_info2_1(phone_number):
+    msg = '💁  <b>Цвет авто:<b>\n\n'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+
+
+def send_ask_car_info2_2(phone_number):
+    msg = '💁 <b>Год выпуска:<b>\n\n'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+
+def send_ask_car_info2_3(phone_number):
+    msg = '💁 <b>Кузов:</b>\n'
+    msg += '(седан,универсал,кроссовер,хэтчбек,минивэн,лифтбэк итд)'
+
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+
+
+def send_ask_car_info3(phone_number):
+    msg = '💁 Отлично, теперь отправьте мне фото:  \n\n'
+    msg += 'Тех паспорт (Лицевая сторона)'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+    # send_template_ask_fill_address(phone_number,user_id)
+
+
+def send_ask_car_info4(phone_number):
+    msg = '💁 Отлично, теперь отправьте мне фото:  \n\n'
+    msg += 'Тех паспорт (Обратная сторона)'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+
+
+
+def send_ask_car_info5(phone_number):
+    msg = '💁 Сфотогрофируйте ваш транспорт и скиньте мне \n\n'
+    msg += 'На фото должен быть виден госномер'
+    send_message(phone_number,msg)
+
+
+
+
+def send_ask_profile_1(phone_number):
+    msg = '💁 Шаг - последний, давайте сделаем фото для профиля в приложении Sapar. Отправьте мне свое фото \n\n'
+    # time.sleep(5) 
+    send_message(phone_number,msg)
+
+
+
+def send_reg_completed(phone_number):
+    msg = '💁 <b> Заявка принята!</b> ✋\n\n'
+    msg += 'Проверка займет до 4 часов, после того как мы проверим вашу заявку в вас будет доступ к заказам в приложении Sapar. \n\n'
+    msg += 'По дополнительным вопросам можете написать в тех поддержку: +77711474766 \n\n'
+
+    # time.sleep(5)     # time.sleep(5) 
+    send_message(phone_number,msg)
+
+
+
+
+
+
+
 
 
 def send_template_ask_fill_address(phone_number,user_id):
