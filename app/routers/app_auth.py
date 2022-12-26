@@ -239,7 +239,16 @@ def get_driver(db: Session = Depends(get_db)):
    
     orders = db.query(models.DriverTemplates).all()
        
-    return {"data": orders}                
+    return {"data": orders}   
+
+
+@router.post('/mobile/template_confirm', status_code=status.HTTP_200_OK)
+def get_user_profile(param: schemas.ConfirmTemplate,db: Session = Depends(get_db)):
+    print("Запрос на подтверждения водителя ", str(param.template_id))
+
+
+    return {"result": "ok"}   
+
 
 # @router.post('/login_old', response_model=schemas.Token)
 # def login_old(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):

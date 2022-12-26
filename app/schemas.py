@@ -105,6 +105,11 @@ class UpdatePhone(BaseModel):
 class UpdateDriverStatus(BaseModel):
     status: int
 
+
+class ConfirmTemplate(BaseModel):
+    template_id: int
+
+
 class TokenData(BaseModel):
     id: Optional[str] = None
 

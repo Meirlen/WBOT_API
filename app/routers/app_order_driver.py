@@ -15,7 +15,7 @@ from yandex.create_order import *
 from admin.telegram_api import *
 from alem.calc_alem_price import get_price_by_route_alem
 
-from app.fb_helper import create_order_in_firebase,change_order_status,update_order_status_in_firebase
+from app.fb_helper import create_order_in_firebase,change_order_status,update_order_status_in_firebase,send_push_notification
 
 
 router = APIRouter(
@@ -75,7 +75,13 @@ def update_order_status_by_driver(order_status: schemas.OrderStatus,background_t
 
         # Update order status in firebase
         update_order_status_in_firebase(order_status.order_id,new_status)
+        if  new_status == "assigned":
+            car_info = str(driver.car_color) + " "+ str(driver.car_model)
+            send_push_notification(order.fb_token,"💁 - К вам выехала машина.",car_info)
 
+        if  new_status == "arrived":
+            car_info = str(driver.car_color) + " "+ str(driver.car_model)
+            send_push_notification(order.fb_token,"💁 - Вас ожидает",car_info)
 
 
         return {
