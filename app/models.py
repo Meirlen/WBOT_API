@@ -99,6 +99,7 @@ class Driver(Base):
     car_body = Column(String, nullable=True)
     car_year = Column(String, nullable=True)
     car_number = Column(String, nullable=True)
+    balance = Column(Integer, nullable=False,default=5000)
 
 
     # owner = relationship("Order")

@@ -13,7 +13,7 @@ db = firestore.client()
 
 
 
-def set_order_in_firebase(order_id,price,route,visibilty,createdAt,is_share_trip,passenger_count):
+def set_order_in_firebase(order_id,price,route,visibilty,createdAt,is_share_trip,passenger_count,phone_number):
     db.collection("orders").document(str(order_id)).set({
 
         "price":price,
@@ -28,7 +28,9 @@ def set_order_in_firebase(order_id,price,route,visibilty,createdAt,is_share_trip
         "route":route,
         "shareTrip":str(is_share_trip),
         "createdAt":str(createdAt),
-        "passenger_count":str(passenger_count)
+        "passenger_count":str(passenger_count),
+        "phone_number":str(phone_number)
+
         })
 
 def update_order_status_in_firebase(order_id,status):
@@ -58,10 +60,10 @@ def update_order_visibilty_in_firebase(order_id,visibilty):
         })
 
 
-def create_order_in_firebase(order_id,price,route,createdAt,is_share_trip = None,passenger_count = None):
+def create_order_in_firebase(order_id,price,route,createdAt,is_share_trip = None,passenger_count = None,phone_number = None):
 
     # Create order for 2km drivers = A category
-    set_order_in_firebase(order_id,price,route,"A",createdAt,is_share_trip,passenger_count)
+    set_order_in_firebase(order_id,price,route,"A",createdAt,is_share_trip,passenger_count,phone_number)
     print("Order with id = ",order_id, ' succesfully created in Firebase with status A')
 
     # Wait 10 seconds and update order for 4km drivers = B category

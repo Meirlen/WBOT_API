@@ -213,7 +213,10 @@ async def create_order_new(order: schemas.UserOrderCreateNew,
         fb_routes,
         new_order.created_at,
         order.is_share_trip,
-        order.passenger_count)
+        order.passenger_count,
+        current_user.phone_number
+        
+        )
 
 
     order_query = db.query(models.Order).filter(models.Order.order_id == order_id)

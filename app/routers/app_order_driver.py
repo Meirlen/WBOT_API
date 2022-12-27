@@ -73,15 +73,30 @@ def update_order_status_by_driver(order_status: schemas.OrderStatus,background_t
               
         db.commit()
 
+
+        if new_status == "completed":
+            
+            try:
+                fee = (int(order.price)/ 100)*9
+                total_balance = driver.balance - fee 
+                driver_query.update({"balance":total_balance}, synchronize_session=False)  
+                db.commit()
+                print("Комиссия успешно списана") 
+  
+            except:    
+                print("Произошла ошибка при списания комиссии")   
+
         # Update order status in firebase
         update_order_status_in_firebase(order_status.order_id,new_status)
         if  new_status == "assigned":
             car_info = str(driver.car_color) + " "+ str(driver.car_model)
-            send_push_notification(order.fb_token,"💁 - К вам выехала машина.",car_info)
+            if order.fb_token!=None:
+                send_push_notification(order.fb_token,"💁 - К вам выехала машина.",car_info)
 
         if  new_status == "arrived":
             car_info = str(driver.car_color) + " "+ str(driver.car_model)
-            send_push_notification(order.fb_token,"💁 - Вас ожидает",car_info)
+            if order.fb_token!=None:
+               send_push_notification(order.fb_token,"💁 - Вас ожидает",car_info)
 
 
         return {
@@ -120,6 +135,8 @@ def get_user_driver_last_order_status(db: Session = Depends(get_db),current_user
                    "order": None,
                    "routes":None,
                    "driver":None,
+                   "user":None,
+
                    }      
 
     user_id = current_user.id
@@ -130,6 +147,8 @@ def get_user_driver_last_order_status(db: Session = Depends(get_db),current_user
                    "order": None,
                    "routes":None,
                    "driver":None,
+                   "user":None,
+
                    }      
 
     driver_order_id = driver.order_id                        
@@ -138,6 +157,9 @@ def get_user_driver_last_order_status(db: Session = Depends(get_db),current_user
                    "order": None,
                    "routes":None,
                    "driver":driver,
+                   "user":None,
+
+
                    }      
 
     # get last order by ORDER DESC
@@ -147,22 +169,32 @@ def get_user_driver_last_order_status(db: Session = Depends(get_db),current_user
             "order": None,
             "routes":None,
             "driver":driver,
+            "user":None,
+
             }      
     order_status = order.status
     if  order_status == "assigned" or order_status == "arrived":  
         routes = db.query(models.Route).filter(models.Route.order_id == driver_order_id).all()
+
+        user = db.query(models.User).filter(
+            models.User.id == order.user_id).first()
+
+        print(order.user_id)    
                       
         return {
                     
                     "order":order,
                     "routes":routes,
-                    "driver":driver
+                    "driver":driver,
+                    "user":user
             }
     else:
         return { 
                    "order": None,
                    "routes":None,
                    "driver":driver,
+                    "user":None,
+
                    }      
 
 
