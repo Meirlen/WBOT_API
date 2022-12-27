@@ -3,7 +3,7 @@ from app import models, schemas as schemas
 from sqlalchemy import and_, or_
 from datetime import datetime, timezone
 from app.wati_msg_builder import *
-
+from yandex.order_crud_status import driver_not_found_info_in_db_and_fb
 
 
 def update_order_status(order_id,new_status,db):
@@ -49,7 +49,7 @@ def get_active_orders():
                 user = db.query(models.User).filter(models.User.id == user_id).first()
                 update_order_status(order_id,"completed",db)
                 phone_number = user.phone_number
-                send_order_completed_message(phone_number,user_id) 
+                # //send_order_completed_message(phone_number,user_id) 
                 print("Спасибо за поездку!")
 
         if status == "search_car":
@@ -59,9 +59,10 @@ def get_active_orders():
                 # db = next(get_db())
                 user = db.query(models.User).filter(models.User.id == user_id).first()
                 update_order_status(order_id,"expired",db)
+                driver_not_found_info_in_db_and_fb(order_id)
                 phone_number = user.phone_number
 
-                send_driver_not_found(phone_number,user_id) 
+                # send_driver_not_found(phone_number,user_id) 
                 print("К сожалению нет свободных машин!")  
        
         print('---------------------------------------')
