@@ -162,6 +162,14 @@ def send_push_notification_to_multiple_devices(registration_ids,title,body):
         ).json()
 
     print(response)  
+
+
+
+
+def update_driver_location_in_firebase(phone,lat,lon):
+    db.collection("drivers").document(str(phone)).update({
+        "lat":lat
+        })  
 # create_order_in_firebase(555,"500","route")
 # print(attach_driver_to_order(4,77))
 # to_token = "dZD_9UzgSSuI-QwqeN9j1z:APA91bG-uAT46KtS1O-VWTqAmpfkpdHQ2mxl1xbmp6l651ivUxZ9NGebCutBbYUMUoFnrxim4gPh1li7wnJZrCd0MSmcWwsZWF5G4pzCUur9m5BKakvoA4dMR29CtUYadsgBmBLTVbL2"

@@ -128,3 +128,6 @@ class WhatsappMessage(BaseModel):
 class GeoCodeRequest(BaseModel):
     lat: float
     lon:float    
+
+
+

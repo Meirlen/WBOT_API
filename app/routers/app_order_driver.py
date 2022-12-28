@@ -231,3 +231,44 @@ def get_orders_history(db: Session = Depends(get_db),current_user: int = Depends
     # orders = db.query(models.Order).filter(models.Order.user_id == user_id).order_by(models.Order.order_id.desc()).all()
        
     return {"orders": orders}    
+
+
+
+
+
+
+
+@router.post("/coordinates", status_code=status.HTTP_200_OK)
+def update_coords_by_driver(request_loc: schemas.GeoCodeRequest,db: Session = Depends(get_db),current_user = Depends(oauth2.get_current_user)):
+    user = current_user
+    if user == None:
+        return { 
+                   "result": None
+
+                   }      
+
+
+
+    # driver = db.query(models.Driver).filter(models.Driver.user_id == current_user.id).first()
+    driver_loc = db.query(models.DriverLocation).filter(models.DriverLocation.phone == current_user.phone_number).first()
+    if driver_loc == None:
+            new_loc = models.DriverLocation(phone = current_user.phone_number,lat = request_loc.lat,lng = request_loc.lon)
+            db.add(new_loc)
+            db.commit()
+            db.refresh(new_loc)
+            db.commit()
+
+
+    else:
+        # order_query = db.query(models.Order).filter(models.Order.order_id == order_status.order_id)
+        driver_query = db.query(models.DriverLocation).filter(models.DriverLocation.phone == current_user.phone_number)
+        driver_query.update({"lat":request_loc.lat,"lng":request_loc.lon,}, synchronize_session=False) 
+        db.commit()
+
+    # print(current_user.id)
+
+
+    return { 
+        "result": "ok"
+
+    }     

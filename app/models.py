@@ -173,3 +173,14 @@ class DriverTemplates(Base):
 
     car_photo = Column(String, nullable=True)
     user_photo = Column(String, nullable=True)
+
+
+
+
+class DriverLocation(Base):
+    __tablename__ = "driver_location"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    phone =  Column(String, nullable=False)
+    lat = Column(Float, nullable=False)
+    lng = Column(Float, nullable=False)
