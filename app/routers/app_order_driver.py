@@ -272,3 +272,14 @@ def update_coords_by_driver(request_loc: schemas.GeoCodeRequest,db: Session = De
         "result": "ok"
 
     }     
+
+
+
+
+@router.get("/coordinates", )
+def get_orders_history(db: Session = Depends(get_db)):
+
+
+    driver_coors = db.query(models.DriverLocation).all()
+    return driver_coors
+
