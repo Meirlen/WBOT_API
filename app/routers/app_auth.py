@@ -265,7 +265,7 @@ def get_driver(db: Session = Depends(get_db)):
        
     return {"data": templates}   
 
-@router.post('/mobile/template_confirm', status_code=status.HTTP_200_OK)
+@router.post('/mobile/driver_templates', status_code=status.HTTP_200_OK)
 def get_user_profile(param: schemas.ConfirmTemplate,db: Session = Depends(get_db)):
     print("Запрос на подтверждения водителя ", str(param.template_id))
 
