@@ -62,7 +62,6 @@
     });
     osm.addTo(map);
 
- 
    setInterval(() => {
 
       getDriverLocations()
@@ -70,13 +69,63 @@
 
 
 
-   }, 5000);
+   }, 50000);
 
     var markerDriver, circle,markerUser;
 
 
+    var markers_driver = [];
 
-    function addMarkers(lat,long){
+    
+    function addMarkers(points){
+
+        for (let i = 0; i < markers_driver.length; i++) {
+            map.removeLayer(markers_driver[i])
+
+        }
+
+     
+
+        var greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+
+
+
+
+
+        for (let i = 0; i < points.length; i++) {
+            // latlngs.push([coordinates[i].latitude, coordinates[i].longitude])
+
+            var titleIcon = new L.DivIcon({
+            className: 'my-div-icon',
+            html: '<img class="my-div-image"   width="33" height="50"src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png"/>'+
+                '<span class="my-div-span">'+points[i]["phone"]+'</span>'
+            })
+
+
+            m = L.marker([points[i]["lat"], points[i]["lng"]],{icon: titleIcon }).addTo(map);
+            console.log("add marker" + points[i]["lat"]);
+            markers_driver.push(m);
+            // addMarkers(data)
+
+         }
+
+         
+        // var featureGroup = L.featureGroup([markers_driver]).addTo(map)
+
+        // map.fitBounds(featureGroup.getBounds())
+
+     
+    }
+
+    function addMarkers2(lat,long){
      
 
         if(markerDriver) {
@@ -104,9 +153,9 @@
         markerUser = L.marker([userLat,userLng])
 
 
-        var featureGroup = L.featureGroup([markerDriver,markerUser]).addTo(map)
+        // var featureGroup = L.featureGroup([markerDriver,markerUser]).addTo(map)
 
-        map.fitBounds(featureGroup.getBounds())
+        // map.fitBounds(featureGroup.getBounds())
 
         console.log("Your coordinate is: Lat: "+ lat +" Long: "+ long)
     }
@@ -144,9 +193,8 @@
                 "order_id": 10,
                 }
         currentRequest = $.ajax({
-                url: "http://165.22.13.172:8000/order/driver_location",
-                type: "post",
-                data: JSON.stringify(json),
+                url: "http://165.22.13.172:8000/mobile/driver/order/coordinates",
+                type: "get",
                 dataType: 'json',
                 async: true,
                 processData: false,
@@ -162,12 +210,15 @@
                 })
                 .done(function (data) {
                     // data = JSON.parse(data);
-                    console.log(data['lat'])
-                    var lat  = data['lat']
-                    var lng  = data['lng']
+                    console.log(data)
+                    addMarkers(data)
 
-                    addMarkers(lat,lng)
-                    getRoute2Points(lat,lng)
+           
+                    // var lat  = data['lat']
+                    // var lng  = data['lng']
+
+                    // addMarkers(lat,lng)
+                    // getRoute2Points(lat,lng)
             
                 });
 
@@ -230,6 +281,9 @@
             }
             return points
     }
+
+
+    getDriverLocations();
 
 
 </script>
