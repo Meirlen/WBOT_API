@@ -240,7 +240,7 @@ def get_driver(db: Session = Depends(get_db)):
     orders = db.query(models.DriverTemplates).all()
     # query = "SELECT * FROM orders INNER JOIN routes ON orders.order_id=routes.order_id;"
 
-    query = "SELECT * FROM driver_templates INNER JOIN drivers ON driver_templates.phone!=drivers.phone;"
+    query = "SELECT * FROM driver_templates"
     templates = db.execute(query).all()
 
     res = []
@@ -256,7 +256,7 @@ def get_driver(db: Session = Depends(get_db)):
     orders = db.query(models.DriverTemplates).all()
     # query = "SELECT * FROM orders INNER JOIN routes ON orders.order_id=routes.order_id;"
 
-    query = "SELECT * FROM driver_templates INNER JOIN drivers ON driver_templates.phone=drivers.phone;"
+    query = "SELECT * FROM drivers ;"
     templates = db.execute(query).all()
 
     res = []
