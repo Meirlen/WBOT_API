@@ -270,7 +270,51 @@ def get_user_profile(param: schemas.ConfirmTemplate,db: Session = Depends(get_db
     print("Запрос на подтверждения водителя ", str(param.template_id))
 
 
-    return {"result": "ok"}   
+    # driver = db.query(models.Driver).filter(models.Driver.user_id == current_user.id).first()
+    driver_template = db.query(models.DriverTemplates).filter(models.DriverTemplates.id == param.template_id).first()
+    user = db.query(models.User).filter(
+        models.User.phone_number == driver_template.phone).first()
+
+
+    if user != None:  
+        user_id = user.id
+
+         
+    else:
+        if not user:
+            # Registr new user
+            new_user = models.User(phone_number = driver_template.phone, role="auser",user_name = "android user")
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            db.commit()
+
+            user_id = new_user.id
+
+
+    # Registr new user
+    new_driver = models.Driver(
+                                driver_name = driver_template.driver_name,
+                                is_online = 0,
+                                car_info = driver_template.car_color +" "+ driver_template.car_model+" "+driver_template.car_number,
+                                phone = driver_template.phone, 
+                                type = 'sapar',
+                                car_model = driver_template.car_model, 
+                                car_color = driver_template.car_color, 
+                                car_body  = driver_template.car_body , 
+                                car_year  = driver_template.car_body , 
+                                car_number  = driver_template.car_number , 
+                                balance  = 3000,
+                                user_id = user_id
+                                )
+
+
+    db.add(new_driver)
+    db.commit()
+    db.refresh(new_driver)
+    
+    
+    return {"Водитель успешно добавлен" }      
 
 
 
