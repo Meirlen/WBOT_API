@@ -47,7 +47,7 @@ def send_push_to_active_drivers(db,from_address):
         registration_ids.append(token.fb_token)
 
     if len(registration_ids)>0:
-       send_push_notification_to_multiple_devices(registration_ids,"⚡🥳 Новый заказ",from_address)
+       send_push_notification_to_multiple_devices(registration_ids,"⚡🥳 Sapar, поступил заказ!",from_address)
  
 
 
