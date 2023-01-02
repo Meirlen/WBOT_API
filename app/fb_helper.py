@@ -17,7 +17,7 @@ def set_order_in_firebase(order_id,price,route,visibilty,createdAt,is_share_trip
     db.collection("orders").document(str(order_id)).set({
 
         "price":price,
-        "visibilty":visibilty,
+        "visibilty":"C",
         "status":"search_car",
         "driver_id":None,
         "order_id":str(order_id),
