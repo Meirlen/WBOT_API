@@ -95,6 +95,6 @@ git pull
 docker-compose up --force-recreate --build -d
 
 git add .
-git commit -m "change locale"
+git commit -m "update push message"
 git push origin master
 # Добрый день, так как продукт новый были перебои на стороне сервера, сейчас бот работает в сатбильном режиме.Приносим извинения за доставленные неудобства.

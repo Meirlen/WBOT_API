@@ -51,12 +51,9 @@ def update_driver_location_in_firebase(order_id,lat,lng):
         
 def update_order_visibilty_in_firebase(order_id,visibilty):
     db.collection("orders").document(str(order_id)).update({
-        "visibilty":visibilty
-        })
+        # "visibilty":visibilty
+        "visibilty":"C"
 
-def update_order_visibilty_in_firebase(order_id,visibilty):
-    db.collection("orders").document(str(order_id)).update({
-        "visibilty":visibilty
         })
 
 
