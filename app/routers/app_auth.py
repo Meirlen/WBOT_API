@@ -405,3 +405,14 @@ def template_confirm_test(param: schemas.GetTemplate,db: Session = Depends(get_d
     
     return {"template:":driver_template }   
 
+
+
+@router.post('/mobile/driver_by_phone', status_code=status.HTTP_200_OK)
+def template_confirm_test(param: schemas.GetTemplate,db: Session = Depends(get_db)):
+
+
+    # driver = db.query(models.Driver).filter(models.Driver.user_id == current_user.id).first()
+    driver_template = db.query(models.Driver).filter(models.Driver.phone == param.phone).all()
+
+    
+    return {"driver:":driver_template }   
