@@ -110,6 +110,9 @@ class ConfirmTemplate(BaseModel):
     template_id: int
 
 
+class GetTemplate(BaseModel):
+    phone: str
+
 class TokenData(BaseModel):
     id: Optional[str] = None
 
