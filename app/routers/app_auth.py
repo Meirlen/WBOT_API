@@ -424,7 +424,7 @@ def user_by_phone(param: schemas.GetTemplate,db: Session = Depends(get_db)):
 
 
     # driver = db.query(models.Driver).filter(models.Driver.user_id == current_user.id).first()
-    driver_template = db.query(models.User).filter(models.User.phone == param.phone).all()
+    driver_template = db.query(models.User).filter(models.User.phone_number == param.phone).all()
 
     
     return {"user:":driver_template }       
