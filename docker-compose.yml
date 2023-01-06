@@ -45,7 +45,13 @@ services:
       - ./:/usr/src/app
       command: ["python","-u", "run_yandex_order_status_listener.py"]
 
-  
+  add_driver_to_db:
+      build: .
+      volumes:
+      - ./:/usr/src/app
+      command: ["python","-u", "add_drivers_to_db.py"]
+
+
   order_listener:
       build: .
       volumes:

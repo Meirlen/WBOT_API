@@ -304,7 +304,7 @@ def get_user_profile(param: schemas.ConfirmTemplate,db: Session = Depends(get_db
                                 car_body  = driver_template.car_body , 
                                 car_year  = driver_template.car_body , 
                                 car_number  = driver_template.car_number , 
-                                balance  = 3000,
+                                balance  = 1000,
                                 user_id = user_id
                                 )
 
@@ -357,7 +357,7 @@ def template_confirm_test(param: schemas.ConfirmTemplate,db: Session = Depends(g
                                 car_body  = driver_template.car_body , 
                                 car_year  = driver_template.car_body , 
                                 car_number  = driver_template.car_number , 
-                                balance  = 3000,
+                                balance  = 1000,
                                 user_id = user_id
                                 )
 

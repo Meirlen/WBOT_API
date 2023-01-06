@@ -184,3 +184,21 @@ class DriverLocation(Base):
     phone =  Column(String, nullable=False)
     lat = Column(Float, nullable=False)
     lng = Column(Float, nullable=False)
+
+
+
+
+
+# 'full_name','full_name','car_number','car_color'
+
+# Assigned drivers
+class DriverTest(Base):
+    __tablename__ = "drivers_test2"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    driver_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    car_model = Column(String, nullable=True)
+    car_number = Column(String, nullable=True)
+    car_color = Column(String, nullable=True)
+    type = Column(String, nullable=True) 
