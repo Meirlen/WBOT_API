@@ -134,3 +134,13 @@ class GeoCodeRequest(BaseModel):
 
 
 
+
+
+
+class NewDriver(BaseModel):
+    driver_name:str
+    car_model:str
+    car_color:str
+    car_body: str
+    car_number:str
+    phone:str

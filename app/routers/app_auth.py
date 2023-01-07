@@ -428,3 +428,72 @@ def user_by_phone(param: schemas.GetTemplate,db: Session = Depends(get_db)):
 
     
     return {"user:":driver_template }       
+
+
+
+
+
+
+@router.post('/mobile/user_by_phone', status_code=status.HTTP_200_OK)
+def user_by_phone(param: schemas.GetTemplate,db: Session = Depends(get_db)):
+
+
+    # driver = db.query(models.Driver).filter(models.Driver.user_id == current_user.id).first()
+    driver_template = db.query(models.User).filter(models.User.phone_number == param.phone).all()
+
+    
+    return {"user:":driver_template }     
+
+
+
+
+
+
+
+@router.post('/mobile/driver', status_code=status.HTTP_200_OK)
+def get_user_profile(param: schemas.NewDriver,db: Session = Depends(get_db)):
+
+
+    user = db.query(models.User).filter(
+        models.User.phone_number == param.phone).first()
+
+
+    if user != None:  
+        user_id = user.id
+
+         
+    else:
+        if not user:
+            # Registr new user
+            new_user = models.User(phone_number = param.phone, role="auser",user_name = "android user")
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            db.commit()
+
+            user_id = new_user.id
+
+
+    # Registr new user
+    new_driver = models.Driver(
+                                driver_name = param.driver_name,
+                                is_online = 0,
+                                car_info = param.car_color +" "+ param.car_model+" "+param.car_number,
+                                phone = param.phone, 
+                                type = 'sapar',
+                                car_model = param.car_model, 
+                                car_color = param.car_color, 
+                                car_body  = param.car_body , 
+                                car_year  = param.car_body , 
+                                car_number  = param.car_number , 
+                                balance  = 1000,
+                                user_id = user_id
+                                )
+
+
+    db.add(new_driver)
+    db.commit()
+    db.refresh(new_driver)
+    
+    
+    return {"result":"Ok"}     
