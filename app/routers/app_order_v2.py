@@ -117,7 +117,7 @@ def create_yandex_order(db,order_id,routes,client_phone_number):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_order_new(order: schemas.UserOrderCreateByAdmin,
+async def create_order_new(order: schemas.UserOrderCreateNew,
                         response: Response,
                         background_tasks: BackgroundTasks,
                         db: Session = Depends(get_db),
@@ -469,7 +469,7 @@ async def geocode(request: schemas.GeoCodeRequest,db: Session = Depends(get_db))
 
 
 @router.post("/admin", status_code=status.HTTP_201_CREATED)
-async def create_order_by_admin(order: schemas.UserOrderCreateNew,
+async def create_order_by_admin(order: schemas.UserOrderCreateByAdmin,
                         response: Response,
                         background_tasks: BackgroundTasks,
                         db: Session = Depends(get_db),
