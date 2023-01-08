@@ -497,3 +497,18 @@ def get_user_profile(param: schemas.NewDriver,db: Session = Depends(get_db)):
     
     
     return {"result":"Ok"}     
+
+
+
+
+
+
+@router.post('/mobile/driver_by_id', status_code=status.HTTP_200_OK)
+def template_confirm_test(param: schemas.GetDriverById,db: Session = Depends(get_db)):
+
+
+    # driver = db.query(models.Driver).filter(models.Driver.user_id == current_user.id).first()
+    driver_template = db.query(models.Driver).filter(models.Driver.id == param.driver_id).all()
+
+    
+    return {"driver:":driver_template }   

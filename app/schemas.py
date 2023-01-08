@@ -128,7 +128,8 @@ class GetTemplate(BaseModel):
 class TokenData(BaseModel):
     id: Optional[str] = None
 
-
+class GetDriverById(BaseModel):
+    driver_id: int
 
 class WhatsappMessage(BaseModel):
     waId: Optional[str] = None  
