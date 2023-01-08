@@ -117,7 +117,7 @@ def create_yandex_order(db,order_id,routes,client_phone_number):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_order_new(order: schemas.UserOrderCreateNew,
+async def create_order_new(order: schemas.UserOrderCreateByAdmin,
                         response: Response,
                         background_tasks: BackgroundTasks,
                         db: Session = Depends(get_db),
@@ -459,3 +459,144 @@ async def geocode(request: schemas.GeoCodeRequest,db: Session = Depends(get_db))
     return  {
             "text": address
     }    
+
+
+
+
+
+
+
+
+
+@router.post("/admin", status_code=status.HTTP_201_CREATED)
+async def create_order_by_admin(order: schemas.UserOrderCreateNew,
+                        response: Response,
+                        background_tasks: BackgroundTasks,
+                        db: Session = Depends(get_db),
+                        ):
+
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
+    # response.headers['Access-Control-Allow-Origin'] = 'http://165.22.13.172'
+
+   
+
+
+    # add to local db
+    new_order = models.Order(   user_id = 1,
+                                app_type = "admin",
+                                tariff = order.tariff,
+                                fb_token = "user_fb_token",
+                                is_share_trip = order.is_share_trip,
+                                passenger_count = order.passenger_count,
+                                
+                            )
+    db.add(new_order)
+    db.commit()
+    db.refresh(new_order)
+
+    
+
+    fb_routes = []
+    for route in order.route:
+        fb_routes.append(
+            {
+                "short_text":route.short_text,
+                "fullname":route.fullname,
+                "lat":route.geo_point[0],
+                "lng":route.geo_point[1]},
+            )
+
+
+
+
+    order_id = new_order.order_id
+ 
+
+    # create new route
+    routes = order.route
+    route_array = []
+    for route in routes:
+        new_route = models.Route(   short_text = route.short_text,
+                                    fullname = route.fullname,
+                                    lat = round(route.geo_point[0], 6),
+                                    lng =  round(route.geo_point[1], 6),
+                                    type = route.type,
+                                    city = route.city,
+                                    order_id = new_order.order_id )
+
+        route_array.append([route.geo_point[1],route.geo_point[0]])
+
+        db.add(new_route)
+        db.commit()
+        db.refresh(new_route)
+
+    # calculate orders
+
+    tariff= order.tariff
+
+    comment= order.comment
+    if comment == "":
+       comment = None 
+
+    if tariff == "e":
+        tariff = "Эконом"
+    if tariff == "c":
+            tariff = "Комфорт"     
+
+
+    
+  
+
+
+    # PRICE INFO
+    price = order.price   
+
+
+    # background_tasks.add_task(create_order_in_firebase,
+    #     new_order.order_id,
+    #     str(price),
+    #     fb_routes,
+    #     new_order.created_at,
+    #     order.is_share_trip,
+    #     order.passenger_count,
+    #     current_user.phone_number
+        
+    #     )
+
+
+    order_query = db.query(models.Order).filter(models.Order.order_id == order_id)
+    order_query.update({"price":price}, synchronize_session=False)    
+    db.commit()
+
+
+
+    
+ 
+
+
+
+    # send to telegram admin user order created message
+
+    from_address = order.route[0].short_text
+
+
+
+
+
+    to_address_array = order.route[1:]
+    if len(to_address_array) == 1:
+        to_address =  order.route[1].short_text
+    else:    
+        to_address =  ""
+        for address in to_address_array:
+            to_address = to_address + " "+ address.short_text + ", "
+
+    address = from_address + "  \n"+ to_address
+
+    # send push message to active drivers
+    # send_push_to_active_drivers(db,from_address + " ➡️ "+  to_address)
+    send_message_to_telegram_chat(ADMIN_CHAT_ID,'⚡ Дтспетчер создал! \n Sapar ' +  " \n "+"\n"+address+"\n Комментарий: "+str(comment))               
+
+    return {"order_id": order_id, "app_type": "admin"}

@@ -45,6 +45,18 @@ class UserOrderCreateNew(BaseModel):
     passenger_count:int
 
 
+class UserOrderCreateByAdmin(BaseModel):
+    route: List[YandexRoute]
+    tariff:str
+    comment:str
+    price:str
+    is_share_trip:int
+    passenger_count:int
+    phone_number: str
+
+
+
+
 class UpdateYToken(BaseModel):
     token:str
      
