@@ -157,3 +157,36 @@ class NewDriver(BaseModel):
     car_body: str
     car_number:str
     phone:str
+
+
+
+
+
+class NewDriverTemp4(BaseModel):
+    car_model:str
+    car_color:str
+    car_body: str
+    car_number:str
+    car_pasport_photo_1:str    
+    car_photo:str    
+    phone:str
+
+
+
+
+
+class NewDriverTemp_1(BaseModel):
+    driver_name:str
+    phone:str
+
+
+
+class NewDriverTemp_2(BaseModel):
+    d_pasport_photo_1:str
+    d_pasport_photo_2:str  
+    phone:str
+
+
+class NewDriverTemp_3(BaseModel):
+    d_pasport_photo_3:str  
+    phone:str

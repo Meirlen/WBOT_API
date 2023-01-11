@@ -512,3 +512,166 @@ def driver_by_id(param: schemas.GetDriverById,db: Session = Depends(get_db)):
 
     
     return {"driver:":driver_template }   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+@router.post('/mobile/driver_temp_1', status_code=status.HTTP_200_OK)
+def add_driver_temp_1(param: schemas.NewDriverTemp_1,db: Session = Depends(get_db)):
+
+
+    # Attach template of driver
+    new_driver = models.DriverTemplates(
+                                driver_name = param.driver_name,
+                                phone = param.phone,
+                    
+        
+        )
+    db.add(new_driver)
+    db.commit()
+    db.refresh(new_driver)
+    
+    
+    return {"result":"Ok"}     
+
+
+
+
+    
+@router.post('/mobile/driver_temp_2', status_code=status.HTTP_200_OK)
+def add_driver_and_temp2(param: schemas.NewDriverTemp_2,db: Session = Depends(get_db)):
+
+
+
+    driver_templates_query = db.query(models.DriverTemplates).filter(models.DriverTemplates.phone == param.phone)
+    driver_templates_query.update(
+                                {"d_pasport_photo_1":param.d_pasport_photo_1,
+                                "d_pasport_photo_2":param.d_pasport_photo_2},
+                                 synchronize_session=False)    
+
+    db.commit()
+
+    return {"result":"Ok"}     
+
+
+
+
+@router.post('/mobile/driver_temp_3', status_code=status.HTTP_200_OK)
+def add_driver_and_temp3(param: schemas.NewDriverTemp_3,db: Session = Depends(get_db)):
+
+
+
+    driver_templates_query = db.query(models.DriverTemplates).filter(models.DriverTemplates.phone == param.phone)
+    driver_templates_query.update(
+                                {"d_pasport_photo_3":param.d_pasport_photo_3},
+                                 synchronize_session=False)    
+
+    db.commit()
+
+    return {"result":"Ok"}        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+@router.post('/mobile/driver_temp_4', status_code=status.HTTP_200_OK)
+def add_driver_and_temp(param: schemas.NewDriverTemp4,db: Session = Depends(get_db)):
+
+
+    user = db.query(models.User).filter(
+        models.User.phone_number == param.phone).first()
+
+
+    if user != None:  
+        user_id = user.id
+
+         
+    else:
+        if not user:
+            # Registr new user
+            new_user = models.User(phone_number = param.phone, role="auser",user_name = "android user")
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            db.commit()
+
+            user_id = new_user.id
+
+
+    driver_template = db.query(models.DriverTemplates).filter(models.DriverTemplates.phone == param.phone).first()
+    
+    print(driver_template.driver_name)
+
+    # Registr new driver
+    new_driver = models.Driver(
+                                driver_name = driver_template.driver_name,
+                                is_online = 0,
+                                car_info = param.car_color +" "+ param.car_model+" "+param.car_number,
+                                phone = param.phone, 
+                                type = 'sapar',
+                                car_model = param.car_model, 
+                                car_color = param.car_color, 
+                                car_body  = param.car_body , 
+                                car_year  = param.car_body , 
+                                car_number  = param.car_number , 
+                                balance  = 1000,
+                                user_id = user_id
+                                )
+
+
+    db.add(new_driver)
+    db.commit()
+    db.refresh(new_driver)
+
+
+
+    # # Attach template of driver
+    # driver_templates_query.update(
+    #                             {"d_pasport_photo_1":param.d_pasport_photo_1,
+    #                             "d_pasport_photo_2":param.d_pasport_photo_2},
+    #                              synchronize_session=False)    
+
+    # db.commit()
+
+
+
+    driver_templates_query = db.query(models.DriverTemplates).filter(models.DriverTemplates.phone == param.phone)
+
+    driver_templates_query.update(
+                                {
+                                    "car_pasport_photo_1":param.car_pasport_photo_1,
+                                     "car_photo":param.car_photo
+
+                                    },
+                                 synchronize_session=False)    
+
+    db.commit()
+    
+    return {"result":"Ok"}         
