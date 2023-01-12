@@ -708,3 +708,35 @@ def add_driver_and_temp3(param: schemas.DriverTempStep,db: Session = Depends(get
 
 
         return {"step":"1"}
+
+
+
+
+
+
+@router.get("/mobile/all_history", )
+def get_orders_history(db: Session = Depends(get_db)):
+
+
+
+
+    query = "SELECT * FROM orders  ORDER BY order_id DESC LIMIT 50"
+    orders_query = db.execute(query)
+
+    orders = []
+    bounus_info = None
+    for row in  orders_query :
+        bounus_info = None
+        routes = db.query(models.Route).filter(models.Route.order_id == row['order_id']).all()
+        app_type = row['app_type']
+        if app_type == "a" and row['price']!=None:
+           bonus = int(row['price'])/100
+           bounus_info = int(bonus)
+        
+
+        orders.append({"order_info":row, "route":routes, "bounus_info":bounus_info})
+
+
+    # orders = db.query(models.Order).filter(models.Order.user_id == user_id).order_by(models.Order.order_id.desc()).all()
+       
+    return {"orders": orders}    
