@@ -694,17 +694,17 @@ def add_driver_and_temp3(param: schemas.DriverTempStep,db: Session = Depends(get
         driver_template = db.query(models.DriverTemplates).filter(models.DriverTemplates.phone == param.phone).first()
         
         if driver_template == None:
-            return {"step:":"1"}
+            return {"step":"1"}
 
 
         if driver_template.d_pasport_photo_3 != None:
-            return {"step:":"4"}
+            return {"step":"4"}
         if driver_template.d_pasport_photo_1 != None:
-            return {"step:":"3"}
+            return {"step":"3"}
         if driver_template.driver_name != None:
-            return {"step:":"2"}
+            return {"step":"2"}
         
 
 
 
-        return {"step:":"1"}
+        return {"step":"1"}
