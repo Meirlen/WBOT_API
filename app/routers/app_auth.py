@@ -604,6 +604,8 @@ def add_driver_and_temp3(param: schemas.NewDriverTemp_3,db: Session = Depends(ge
 @router.post('/mobile/driver_temp_4', status_code=status.HTTP_200_OK)
 def add_driver_and_temp(param: schemas.NewDriverTemp4,db: Session = Depends(get_db)):
 
+    print(param.phone)
+
 
     user = db.query(models.User).filter(
         models.User.phone_number == param.phone).first()
@@ -675,3 +677,34 @@ def add_driver_and_temp(param: schemas.NewDriverTemp4,db: Session = Depends(get_
     db.commit()
     
     return {"result":"Ok"}         
+
+
+
+
+
+
+
+
+
+@router.post('/mobile/current_driver_temp', status_code=status.HTTP_200_OK)
+def add_driver_and_temp3(param: schemas.DriverTempStep,db: Session = Depends(get_db)):
+
+
+
+        driver_template = db.query(models.DriverTemplates).filter(models.DriverTemplates.phone == param.phone).first()
+        
+        if driver_template == None:
+            return {"step:":"1"}
+
+
+        if driver_template.d_pasport_photo_3 != None:
+            return {"step:":"4"}
+        if driver_template.d_pasport_photo_1 != None:
+            return {"step:":"3"}
+        if driver_template.driver_name != None:
+            return {"step:":"2"}
+        
+
+
+
+        return {"step:":"1"}

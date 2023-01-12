@@ -190,3 +190,7 @@ class NewDriverTemp_2(BaseModel):
 class NewDriverTemp_3(BaseModel):
     d_pasport_photo_3:str  
     phone:str
+
+
+class DriverTempStep(BaseModel):
+    phone:str
