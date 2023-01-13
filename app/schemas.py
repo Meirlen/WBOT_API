@@ -194,3 +194,7 @@ class NewDriverTemp_3(BaseModel):
 
 class DriverTempStep(BaseModel):
     phone:str
+
+
+class HistoryPagination(BaseModel):
+    page:str
