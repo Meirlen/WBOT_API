@@ -747,9 +747,22 @@ def get_orders_history(db: Session = Depends(get_db)):
 
 
 @router.get("/mobile/order_history", )
-def get_orders_history_all(page: int , email:str,start_date:str,end_date:str, db: Session = Depends(get_db)):
+def get_orders_history_all(page: int , email:str,start_date:str,end_date:str,status:str,  db: Session = Depends(get_db)):
 
-    query = "SELECT * FROM orders  ORDER BY order_id DESC LIMIT 50"
+
+    limit = 5;
+    offset = (limit * page) - limit;
+
+    start_date = start_date.replace("-","")
+    end_date = end_date.replace("-","")
+
+    if status == "all":
+        date_filter = "WHERE created_at BETWEEN '"+start_date+"' and '"+end_date+"'"
+    else:
+        date_filter = "WHERE created_at BETWEEN '"+start_date+"' and '"+end_date+"' and status = '"+status+"'"
+
+
+    query = "SELECT * FROM orders    "+date_filter+ " ORDER BY order_id DESC LIMIT "+str(limit)+" OFFSET "+str(offset)+" "
     orders_query = db.execute(query)
 
     orders = []
