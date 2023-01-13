@@ -202,3 +202,10 @@ class DriverTest(Base):
     car_number = Column(String, nullable=True)
     car_color = Column(String, nullable=True)
     type = Column(String, nullable=True) 
+
+
+class Dispatchers(Base):
+    __tablename__ = "dispatchers"
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=True)

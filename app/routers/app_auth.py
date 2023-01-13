@@ -769,3 +769,17 @@ def get_orders_history_all(page: int , email:str,start_date:str,end_date:str, db
     # orders = db.query(models.Order).filter(models.Order.user_id == user_id).order_by(models.Order.order_id.desc()).all()
        
     return {"orders": orders}    
+
+
+
+
+
+    
+@router.get("/mobile/dispatchers", )
+def get_dispatchers( db: Session = Depends(get_db)):
+
+    dispatcher = db.query(models.Dispatchers).all()
+
+    # orders = db.query(models.Order).filter(models.Order.user_id == user_id).order_by(models.Order.order_id.desc()).all()
+       
+    return {"dispatchers": dispatcher}    
